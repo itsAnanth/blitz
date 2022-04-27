@@ -1,6 +1,7 @@
+/* eslint-disable import/no-anonymous-default-export */
 export default {
     content: [
-        './components/**/*.{js,ts,jsx,tsx}',
+        "./src/**/*.{js,jsx,ts,tsx}",
     ],
     theme: {
         extend: {},
