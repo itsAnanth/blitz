@@ -1,10 +1,23 @@
 import Message from '../../../shared/structures/Message';
-import { createEventDispatcher } from 'svelte';
+import type { IWSM } from '../types/WsManager';
+
+interface WsManager extends IWSM { };
 
 class WsManager extends EventTarget {
     constructor() {
         super();
+
+        this.ws = null;
     }
+
+    private wsHandshake() {
+        const msg = Message.encode(new Message({
+            type: Message.types.CONNECT,
+        }));
+        this.ws.send(msg);
+        return true;
+    }
+
     connect() {
         const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
         const hostname = window.location.hostname === 'localhost' ? 'localhost:8000' : 'herokuapp';
@@ -13,9 +26,11 @@ class WsManager extends EventTarget {
 
         const ws = new WebSocket(wsURL);
 
+        this.ws = ws;
+
         ws.binaryType = 'arraybuffer';
 
-        ws.addEventListener('open', () => console.log('ws open'));
+        ws.addEventListener('open', () => this.wsHandshake() && console.log('ws open'));
         ws.addEventListener('error', console.error);
         ws.addEventListener('close', () => console.log('ws closed'));
         ws.addEventListener('message', (event) => {
