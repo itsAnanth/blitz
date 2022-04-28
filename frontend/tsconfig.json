@@ -1,30 +1,11 @@
 {
     // Mapped from https://www.typescriptlang.org/tsconfig
     "compilerOptions": {
-        // type checks
-        "allowUnusedLabels": false,
-        "allowUnreachableCode": false,
-        "strictNullChecks": false,
-        "esModuleInterop": true,
-        "downlevelIteration": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "strict": true,
-
-        // modules
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-
-        // env
-        "target": "ESNext",
-
+        "pretty": true,
         "outDir": "dist",
-        "sourceMap": false,
-        "declaration": true,
-        "declarationMap": true,
         "allowJs": true,
 		"jsx": "react-jsx"
     },
     "exclude": ["**/dist/"],
+    "extends": "../tsconfig.json"
 }
