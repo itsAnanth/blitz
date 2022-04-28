@@ -1,6 +1,7 @@
 import { TemplatedApp } from "uWebSockets.js";
 import type { IWSS } from '../types/WsServer';
 import crypto from 'crypto';
+import Message from '../../shared/structures/Message';
 
 interface WsServer extends IWSS { };
 
@@ -16,11 +17,19 @@ class WsServer {
             open: (ws) => {
                 ws.id = crypto.randomBytes(16).toString('hex');
                 ws.subscribe("STATE/");
-                this.sockets.set(ws.id, ws);
                 console.log(`Client connected with id ${ws.id}`);
             },
-            message: (ws, message) => {
-                
+            message: (ws, _message) => {
+                const message = Message.inflate(_message);
+                if (!message) return;
+
+                switch (message.type) {
+                    case Message.types.CONNECT:
+                        this.sockets.set(ws.id, ws);
+                        ws.send(Message.encode(new Message({ type: Message.types.CONNECT, data: ['authorized'] })), true);
+                        break;
+
+                }
             },
             close: (ws, code, _message) => {
                 this.sockets.delete(ws.id);
