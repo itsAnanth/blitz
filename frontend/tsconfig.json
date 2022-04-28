@@ -4,7 +4,8 @@
         "pretty": true,
         "outDir": "dist",
         "allowJs": true,
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+        "lib": ["DOM"]
     },
     "exclude": ["**/dist/"],
     "extends": "../tsconfig.json"
