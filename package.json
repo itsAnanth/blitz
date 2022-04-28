@@ -4,7 +4,11 @@
   "description": "TODO",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-install": "npm install -g pnpm && pnpm install",
+    "build": "cd frontend && pnpm build",
+    "heroku-postbuild": "npm install -g pnpm && pnpm install && cd ./backend && pnpm install && pnpm build",
+    "start:server": "cd ./backend && npm run start"
   },
   "repository": {
     "type": "git",
