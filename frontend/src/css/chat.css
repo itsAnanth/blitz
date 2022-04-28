@@ -200,6 +200,11 @@ a {
     font-size: 1.3rem;
 }
 
+#leave-btn:hover {
+    color: rgb(55, 55, 219);
+    cursor: pointer;
+}
+
 @media (max-width: 700px) {
     .chat-main {
         display: block;
