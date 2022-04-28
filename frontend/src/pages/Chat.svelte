@@ -7,10 +7,28 @@
 
     const chatForm = document.getElementById("chat-form");
     const roomName = document.getElementById("room-name");
-    const userList = document.getElementById("users");
 
-    wsm.addEventListener('messagecreate', (ev: any) => outputMessage(ev.detail));
-    
+    wsm.addEventListener("messagecreate", (ev: any) =>
+        outputMessage(ev.detail)
+    );
+
+    wsm.addEventListener("users", (ev: any) =>
+        outputUsers(ev.detail as unknown as { id: string; username: string }[])
+    );
+
+    wsm.addEventListener("userjoin", (ev: any) => {
+        const message = ev.detail.message;
+        outputMessage(
+            new ChatMessage({
+                author: message.author,
+                content: message.content,
+                id: message.id,
+            })
+        );
+
+        outputUsers(ev.detail.users);
+    });
+
     function onSubmit(e: any) {
         e.preventDefault();
 
@@ -18,25 +36,41 @@
 
         msg = msg.trim();
 
-        if (!msg) 
-            return;
-        
+        if (!msg) return;
+
         e.target.elements.msg.value = "";
         e.target.elements.msg.focus();
 
         const chatMsg = new ChatMessage({ author: username, content: msg });
 
-        wsm.send(new Message({ type: Message.types.MESSAGE_CREATE, data: [chatMsg.serialize()] }));
-    };
+        wsm.send(
+            new Message({
+                type: Message.types.MESSAGE_CREATE,
+                data: [chatMsg.serialize()],
+            })
+        );
+    }
+
+    function outputUsers(users: { id: string; username: string }[]) {
+        const userList = document.getElementById("users");
+        userList.innerHTML = "";
+        users.forEach((user) => {
+            const li = document.createElement("li");
+            li.innerText = user.username;
+            userList.appendChild(li);
+        });
+    }
 
     function outputMessage(message: ChatMessage) {
         const div = document.createElement("div");
-        div.classList.add("message", message.id || '');
+        div.classList.add("message", message.id || "");
         const p = document.createElement("p");
         p.classList.add("meta");
         p.innerText = message.author;
-        p.innerHTML += ` <span>${new Date(message.timestamp).toLocaleString('en-US', { hour: 'numeric', hour12: true, minute: 'numeric' })}</span>`;
-
+        p.innerHTML += ` <span>${new Date(message.timestamp).toLocaleString(
+            "en-US",
+            { hour: "numeric", hour12: true, minute: "numeric" }
+        )}</span>`;
 
         div.appendChild(p);
 
@@ -49,7 +83,7 @@
 
         const chatMessages = document.querySelector(".chat-messages");
 
-        chatMessages.scrollTo(0, chatMessages.scrollHeight)
+        chatMessages.scrollTo(0, chatMessages.scrollHeight);
     }
 </script>
 
@@ -65,7 +99,7 @@
             <h3><i />Users</h3>
             <ul id="users" />
         </div>
-        <div class="chat-messages"></div>
+        <div class="chat-messages" />
     </main>
 
     <div class="chat-form-container">

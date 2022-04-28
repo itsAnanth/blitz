@@ -1,8 +1,9 @@
 import type { TemplatedApp, WebSocket } from 'uWebSockets.js';
+import User from '../structures/User';
 
 interface WsServer {
     app: TemplatedApp;
-    sockets: Map<string, WebSocket>;
+    sockets: Map<string, User>;
     port: number;
 }
 
