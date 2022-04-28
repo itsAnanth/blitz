@@ -3,10 +3,19 @@
     "compilerOptions": {
         "pretty": true,
         "outDir": "dist",
-        "allowJs": true,
-		"jsx": "react-jsx",
-        "lib": ["DOM"]
+        "lib": [
+            "DOM"
+        ],
+        "module": "ESNext"
     },
-    "exclude": ["**/dist/"],
-    "extends": "../tsconfig.json"
+    "exclude": [
+        "**/dist/"
+    ],
+    "extends": "../tsconfig.json",
+    "include": [
+        "./src",
+        "../lib/types",
+        "src/**/*.svelte",
+        "src/**/*.ts"
+    ],
 }
