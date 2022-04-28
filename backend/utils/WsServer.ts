@@ -29,7 +29,8 @@ class WsServer {
                         ws.send(Message.encode(new Message({ type: Message.types.CONNECT, data: ['authorized'] })), true);
                         break;
                     case Message.types.MESSAGE_CREATE:
-                        this.app.publish('STATE/', _message, true);
+                        const _data = { ...message.data[0], id: crypto.createHash('sha256').digest('hex') };
+                        this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.MESSAGE_CREATE, data: [_data] })), true);
                         break;
 
                 }
