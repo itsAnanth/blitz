@@ -5,6 +5,6 @@ interface ChatMessage {
     id?: string;
 }
 
-type ChatMessagePayload = { author: string, content: string, timestamp?: number }
+type ChatMessagePayload = { author: string, content: string, timestamp?: number, id? :string }
 
 export type { ChatMessage as IChatMessage, ChatMessagePayload };
