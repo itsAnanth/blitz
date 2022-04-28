@@ -39,14 +39,28 @@ class WsManager extends EventTarget {
 
             if (!message) return;
 
+            let eventName, detail;
+
             switch (message.type) {
                 case Message.types.CONNECT:
-                    this.dispatchEvent(new Event('connect'));
+                    eventName = 'connect';
+                    detail = null;
                     break;
                 case Message.types.MESSAGE_CREATE:
-                    this.dispatchEvent(new CustomEvent('messagecreate', { detail: message.data[0] }));
+                    eventName = 'messagecreate';
+                    detail = message.data[0];
                     break;
+                case Message.types.JOIN:
+                    eventName = 'userjoin';
+                    let usersData = Message.inflate(message.data[1]);
+                    detail = { message: message.data[0], users: usersData ? usersData.data : [] };
+                    break;
+                case Message.types.USERS:
+                    eventName = 'users';
+                    detail = message.data[0];
             }
+
+            this.dispatchEvent(new CustomEvent(eventName, { detail: detail }));
         })
     }
 
