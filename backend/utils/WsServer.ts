@@ -28,6 +28,9 @@ class WsServer {
                         this.sockets.set(ws.id, ws);
                         ws.send(Message.encode(new Message({ type: Message.types.CONNECT, data: ['authorized'] })), true);
                         break;
+                    case Message.types.MESSAGE_CREATE:
+                        this.app.publish('STATE/', _message, true);
+                        break;
 
                 }
             },
