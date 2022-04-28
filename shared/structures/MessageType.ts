@@ -1,4 +1,6 @@
 enum MessageType {
+    JOIN,
+    USERS,
     CONNECT,
     DISCONNECT,
     MESSAGE_CREATE,
