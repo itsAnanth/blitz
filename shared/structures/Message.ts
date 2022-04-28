@@ -5,7 +5,7 @@ import { MessageType } from './MessageType';
 interface Message extends IMessage {};
 
 class Message {
-    constructor(type: MessageType, data: any[]) {
+    constructor({ type, data = [] }: { type: MessageType, data?: any[] }) {
         this.type = type;
         this.data = data;
     }
@@ -24,7 +24,7 @@ class Message {
             }
         }
 
-        const msgT = new Message(decoded_message.shift(), decoded_message.length == 0 ? [] : decoded_message);
+        const msgT = new Message({ type: decoded_message.shift(), data: decoded_message.length == 0 ? [] : decoded_message });
         return msgT
     }
 
