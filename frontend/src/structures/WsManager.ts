@@ -1,3 +1,4 @@
+import ChatMessage from '../../../shared/structures/ChatMessage';
 import Message from '../../../shared/structures/Message';
 import type { IWSM } from '../types/WsManager';
 
@@ -42,9 +43,19 @@ class WsManager extends EventTarget {
                 case Message.types.CONNECT:
                     this.dispatchEvent(new Event('connect'));
                     break;
+                case Message.types.MESSAGE_CREATE:
+                    this.dispatchEvent(new CustomEvent('messagecreate', { detail: message.data[0] }));
+                    break;
             }
         })
+    }
 
+
+    send(msg: Message) {
+
+        if (!this.ws || this.ws.readyState === WebSocket.CLOSED) return;
+
+        this.ws.send(Message.encode(msg));
     }
 }
 
