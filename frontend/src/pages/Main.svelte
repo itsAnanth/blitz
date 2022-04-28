@@ -1,18 +1,29 @@
 <script lang="ts">
+    import Chat from './Chat.svelte';
+    import LogIn from './LogIn.svelte';
     import WsManager from "../structures/WsManager";
 
-    let wsConnected = false;
+    let wsConnected: boolean = false, loggedIn: boolean = false, username: string;
     const wsm = new WsManager();
 
-    wsm.addEventListener('connect', () => wsConnected = true);
+    wsm.addEventListener('connect', () => {
+        wsConnected = true;
+    });
     wsm.connect();
+
+    function handleLogin(ev: any) {
+        loggedIn = true;
+        username = ev.detail.username;
+    }
 
 </script>
 
 
 {#if !wsConnected}
-    <div>hello world</div>
+    <div>connecting</div>
+{:else if !loggedIn}
+    <LogIn on:joinroom={handleLogin} />
 {:else}
-    <div>connected</div>
+    <Chat wsm={wsm} username={username} />
 {/if}
 
