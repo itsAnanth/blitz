@@ -10,6 +10,8 @@ class Message {
         this.data = data;
     }
 
+    static types = MessageType;
+
     static inflate(data: ArrayBuffer | DataView): Message | false {
         let _data = new Uint8Array(data instanceof DataView ? data.buffer : data);
         let decoded_message = decode(_data);
