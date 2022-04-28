@@ -22,8 +22,8 @@ class WsServer {
             message: (ws, message) => {
                 
             },
-            close: (ws, code, message) => {
-                
+            close: (ws, code, _message) => {
+                this.sockets.delete(ws.id);
                 console.log('client disconnected with code ' + code)
             },
             idleTimeout: 32,
