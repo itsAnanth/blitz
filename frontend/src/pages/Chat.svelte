@@ -2,9 +2,11 @@
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import WsManager from "../structures/WsManager";
     import Message from "../../../shared/structures/Message";
+    import { createEventDispatcher } from 'svelte';
 
     export let username: string, wsm: WsManager;
 
+    const dispatch = createEventDispatcher();
     const chatForm = document.getElementById("chat-form");
     const roomName = document.getElementById("room-name");
 
@@ -17,6 +19,19 @@
     );
 
     wsm.addEventListener("userjoin", (ev: any) => {
+        const message = ev.detail.message;
+        outputMessage(
+            new ChatMessage({
+                author: message.author,
+                content: message.content,
+                id: message.id,
+            })
+        );
+
+        outputUsers(ev.detail.users);
+    });
+
+    wsm.addEventListener("userleave", (ev: any) => {
         const message = ev.detail.message;
         outputMessage(
             new ChatMessage({
@@ -90,7 +105,7 @@
 <div class="chat-container">
     <header class="chat-header">
         <h1><i />Blitz</h1>
-        <div id="leave-btn" class="'btn">Leave Room</div>
+        <div id="leave-btn" on:click={() => dispatch('logout')} class="'btn">Leave Room</div>
     </header>
     <main class="chat-main">
         <div class="chat-sidebar">

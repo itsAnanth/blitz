@@ -39,7 +39,7 @@ class WsManager extends EventTarget {
 
             if (!message) return;
 
-            let eventName, detail;
+            let eventName, detail, usersData;
 
             switch (message.type) {
                 case Message.types.CONNECT:
@@ -52,12 +52,17 @@ class WsManager extends EventTarget {
                     break;
                 case Message.types.JOIN:
                     eventName = 'userjoin';
-                    let usersData = Message.inflate(message.data[1]);
+                    usersData = Message.inflate(message.data[1]);
                     detail = { message: message.data[0], users: usersData ? usersData.data : [] };
                     break;
                 case Message.types.USERS:
                     eventName = 'users';
                     detail = message.data[0];
+                case Message.types.LEAVE:
+                    eventName = 'userleave';
+                    usersData = Message.inflate(message.data[1]);
+                    detail = { message: message.data[0], users: usersData ? usersData.data : [] };
+                    break;
             }
 
             this.dispatchEvent(new CustomEvent(eventName, { detail: detail }));

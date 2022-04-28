@@ -1,5 +1,6 @@
 enum MessageType {
     JOIN,
+    LEAVE,
     USERS,
     CONNECT,
     DISCONNECT,

@@ -39,11 +39,16 @@ class WsServer {
                         break;
                     case Message.types.JOIN:
                         this.sockets.set(ws.id, new User(message.data[0], ws));
-                        _data = { author: 'Blitz Bot', content: `${message.data[0]} has Joined`, id: crypto.createHash('sha256').digest('hex') };
+                        _data = { author: 'Blitz Bot', content: `${message.data[0]} joined the chat`, id: crypto.createHash('sha256').digest('hex') };
                         this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.JOIN, data: [_data, this.usersData()] })), true);
                         break;
                     case Message.types.USERS:
                         ws.send(this.usersData(), true);
+                        break;
+                    case Message.types.LEAVE:
+                        this.sockets.delete(ws.id);
+                        _data = { author: 'Blitz Bot', content: `${message.data[0]} left the chat`, id: crypto.createHash('sha256').digest('hex') };
+                        this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.LEAVE, data: [_data, this.usersData()] })), true);
                         break;
                         
                 }

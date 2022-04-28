@@ -4,7 +4,7 @@
     import WsManager from "../structures/WsManager";
     import Message from '../../../shared/structures/Message';
 
-    let wsConnected: boolean = false, loggedIn: boolean = false, username: string;
+    let wsConnected: boolean = false, loggedIn: boolean = false, username: string | null = null;
     const wsm = new WsManager();
 
     wsm.addEventListener('connect', () => {
@@ -19,14 +19,20 @@
         wsm.send(new Message({ type: Message.types.JOIN, data: [username] }));
     }
 
+    function handleLogout() {
+        loggedIn = false;
+        wsm.send(new Message({ type: Message.types.LEAVE, data: [username] }));
+        username = null;
+    }
+
 </script>
 
 
 {#if !wsConnected}
     <div>connecting</div>
 {:else if !loggedIn}
-    <LogIn on:joinroom={handleLogin} />
+    <LogIn on:login={handleLogin} />
 {:else}
-    <Chat wsm={wsm} username={username} />
+    <Chat on:logout={handleLogout} wsm={wsm} username={username} />
 {/if}
 
