@@ -6,7 +6,6 @@
     export let username: string, wsm: WsManager;
 
     const chatForm = document.getElementById("chat-form");
-    const chatMessages = document.querySelector(".chat-messages");
     const roomName = document.getElementById("room-name");
     const userList = document.getElementById("users");
 
@@ -32,7 +31,7 @@
 
     function outputMessage(message: ChatMessage) {
         const div = document.createElement("div");
-        div.classList.add("message");
+        div.classList.add("message", message.id || '');
         const p = document.createElement("p");
         p.classList.add("meta");
         p.innerText = message.author;
@@ -48,6 +47,9 @@
         div.appendChild(para);
         document.querySelector(".chat-messages").appendChild(div);
 
+        const chatMessages = document.querySelector(".chat-messages");
+
+        chatMessages.scrollTo(0, chatMessages.scrollHeight)
     }
 </script>
 
