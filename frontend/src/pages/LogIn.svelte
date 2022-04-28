@@ -4,7 +4,7 @@
     const dispatch = createEventDispatcher();
     function onSubmit(ev: any) {
         ev.preventDefault();
-        dispatch('joinroom', ({ username: ev.target.username.value }));
+        dispatch('login', ({ username: ev.target.username.value }));
     }
 </script>
 
