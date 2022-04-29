@@ -5,7 +5,10 @@
     import Message from '../../../shared/structures/Message';
 
     let wsConnected: boolean = false, loggedIn: boolean = false, username: string | null = null;
-    const wsm = new WsManager();
+    
+    const wsm = window.wsm ?? new WsManager();
+
+    if (!window.wsm) window.wsm = wsm;
 
     wsm.addEventListener('connect', () => {
         wsConnected = true;
