@@ -1,8 +1,3 @@
-# wsChatApp
+# Blitz
 
-
-TODO
-
-* add basic ws handshake using uws
-* rooms & frontend
-* frontend styles
+A simple and fast websocket chat app built with uWebSockets, svelte and typescript with vite bundler
