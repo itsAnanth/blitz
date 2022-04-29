@@ -1,16 +1,17 @@
 <script lang="ts">
-    import Chat from './Chat.svelte';
-    import LogIn from './LogIn.svelte';
+    import Chat from "./Chat.svelte";
+    import LogIn from "./LogIn.svelte";
     import WsManager from "../structures/WsManager";
-    import Message from '../../../shared/structures/Message';
+    import Message from "../../../shared/structures/Message";
 
-    let wsConnected: boolean = false, loggedIn: boolean = false, username: string | null = null;
-    
-    const wsm = window.wsm ?? new WsManager();
+    let wsConnected: boolean = false,
+        loggedIn: boolean = false,
+        username: string | null = null,
+        wsConfiged = false;
 
-    if (!window.wsm) window.wsm = wsm;
+    let wsm = new WsManager();
 
-    wsm.addEventListener('connect', () => {
+    wsm.addEventListener("connect", () => {
         wsConnected = true;
     });
 
@@ -28,14 +29,15 @@
         username = null;
     }
 
+    wsm.addEventListener("config", () => {
+        wsConfiged = true;
+    });
 </script>
-
 
 {#if !wsConnected}
     <div>connecting</div>
 {:else if !loggedIn}
     <LogIn on:login={handleLogin} />
 {:else}
-    <Chat on:logout={handleLogout} wsm={wsm} username={username} />
+    <Chat on:logout={handleLogout} {wsm} {username} {wsConfiged} />
 {/if}
-
