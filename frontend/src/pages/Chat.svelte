@@ -111,7 +111,7 @@
 
 <div class="chat-container">
     <header class="chat-header">
-        <h1><i />Blitz</h1>
+        <h1>Blitz</h1>
         <div id="leave-btn" on:click={() => dispatch("logout")} class="btn">
             Leave Room
         </div>
@@ -135,7 +135,7 @@
                 required
                 autocomplete="off"
             />
-            <button class="btn"><i />Send</button>
+            <button class="btn">Send</button>
         </form>
     </div>
 </div>
