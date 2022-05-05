@@ -2,7 +2,7 @@
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import WsManager from "../structures/WsManager";
     import Message from "../../../shared/structures/Message";
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
 
     export let username: string,
         wsm: WsManager,
@@ -10,6 +10,8 @@
         avatar: number;
 
     const dispatch = createEventDispatcher();
+
+    onMount(() => document.getElementById("msg").focus());
 
     if (!wsConfiged) {
         attachListeners();
@@ -23,7 +25,11 @@
 
         wsm.addEventListener("users", (ev: any) =>
             outputUsers(
-                ev.detail as unknown as { id: string; username: string, avatar: number }[]
+                ev.detail as unknown as {
+                    id: string;
+                    username: string;
+                    avatar: number;
+                }[]
             )
         );
 
@@ -82,11 +88,11 @@
         );
     }
 
-    function outputUsers(users: { id: string; username: string, avatar: number }[]) {
+    function outputUsers(
+        users: { id: string; username: string; avatar: number }[]
+    ) {
         const userList = document.getElementById("users");
         userList.innerHTML = "";
-
-        console.log(users);
 
         users.forEach((user) => {
             const div = document.createElement("div");
@@ -94,7 +100,7 @@
 
             const p = document.createElement("p");
             p.innerText = user.username;
-            p.classList.add('username');
+            p.classList.add("username");
 
             const userAvatar = document.createElement("img");
             userAvatar.classList.add("avatar");
@@ -157,7 +163,7 @@
             <h3>Room Name:</h3>
             <h2 id="room-name">Test</h2>
             <h3>Users</h3>
-            <div id="users"></div>
+            <div id="users" />
         </div>
         <div class="chat-messages" />
     </main>
