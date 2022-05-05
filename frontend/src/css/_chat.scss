@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
 :root {
+    --dark-color-z: #4e65fa;
     --dark-color-a: #667aff;
     --dark-color-b: #7386ff;
     --light-color: #e6e9ff;
@@ -108,15 +109,20 @@ a {
                 height: 3rem;
                 object-fit: cover;
             }
-            
+
             & .meta-wrapper {
                 padding-left: 1rem;
+
+                & .text {
+                    font-size: 1rem;
+                }
+
                 & .meta {
                     font-size: 1rem;
                     font-weight: bold;
                     display: flex;
                     margin-bottom: 0.5rem;
-        
+
                     & span {
                         color: #777;
                         padding-left: 0.4rem;
@@ -251,6 +257,32 @@ input:focus {
     }
 }
 
+#users {
+    & div {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0.5rem;
+        overflow-y: visible;
+        
+        &:hover {
+            background: var(--dark-color-z);
+        }
+    }
+
+    & .avatar {
+        width: 3rem;
+        height: 3rem;
+        object-fit: cover;
+    }
+
+    & .username {
+        overflow-wrap: break-word;
+        padding-left: 1.2rem;
+    }
+}
+
 
 textarea,
 input {
@@ -270,35 +302,35 @@ input {
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     :root {
-        font-size: 10px;
+        font-size: 12px;
     }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
     :root {
-        font-size: 10px;
+        font-size: 13px;
     }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
     :root {
-        font-size: 12px;
+        font-size: 14px;
     }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
     :root {
-        font-size: 13px;
+        font-size: 15px;
     }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
     :root {
-        font-size: 16px;
+        font-size: 18px;
     }
 }
 
