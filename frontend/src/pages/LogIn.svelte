@@ -4,7 +4,9 @@
     const dispatch = createEventDispatcher();
     function onSubmit(ev: any) {
         ev.preventDefault();
-        dispatch('login', ({ username: ev.target.username.value }));
+        let _username = ev.target.username.value;
+        if (_username.length > 10) return alert('username too long')
+        dispatch('login', ({ username: _username }));
     }
 </script>
 
