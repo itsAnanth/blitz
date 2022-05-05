@@ -8,7 +8,7 @@
         loggedIn: boolean = false,
         username: string | null = null,
         wsConfiged = false,
-        avatar = Math.floor(Math.random() * 100);
+        avatar: null | number = null;
 
     let wsm = new WsManager();
 
@@ -21,6 +21,7 @@
     function handleLogin(ev: any) {
         loggedIn = true;
         username = ev.detail.username;
+        avatar = Math.floor(Math.random() * 100)
         wsm.send(new Message({ type: Message.types.JOIN, data: [username, avatar] }));
     }
 
@@ -28,6 +29,7 @@
         loggedIn = false;
         wsm.send(new Message({ type: Message.types.LEAVE, data: [username] }));
         username = null;
+        avatar = null;
     }
 
     wsm.addEventListener("config", () => {
