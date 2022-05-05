@@ -40,6 +40,7 @@ class WsServer {
                         this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.MESSAGE_CREATE, data: [_data] })), true);
                         break;
                     case Message.types.JOIN:
+                        console.log(`user joined, username -> ${message.data[0]} avatar -> ${message.data[1]}`)
                         this.sockets.set(ws.id, new User(message.data[0], ws, message.data[1]));
                         _data = { author: 'Blitz Bot', content: `${message.data[0]} joined the chat`, id: crypto.createHash('sha256').digest('hex') };
                         this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.JOIN, data: [_data, this.usersData()] })), true);
