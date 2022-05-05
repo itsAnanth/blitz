@@ -29,7 +29,7 @@ class WsServer {
                 const message = Message.inflate(_message);
                 if (!message) return;
 
-                console.log('event ' + message.type);
+                console.log(`${message.type}`);
 
                 switch (message.type) {
                     case Message.types.CONNECT:
