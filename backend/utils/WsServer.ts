@@ -14,7 +14,7 @@ class WsServer {
     }
 
     usersData() {
-        return Message.encode(new Message({ type: Message.types.USERS, data: [...this.sockets.entries()].map(([id, user]) => ({ id: id, username: user.name })) }));
+        return Message.encode(new Message({ type: Message.types.USERS, data: [...this.sockets.entries()].map(([id, user]) => ({ id: id, ...user.serialize() })) }));
     }
 
     start() {
