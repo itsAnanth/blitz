@@ -3,8 +3,9 @@ interface ChatMessage {
     timestamp: number;
     author: string;
     id?: string;
+    avatar: number;
 }
 
-type ChatMessagePayload = { author: string, content: string, timestamp?: number, id? :string }
+type ChatMessagePayload = { author: string, content: string, timestamp?: number, id? :string, avatar: number }
 
 export type { ChatMessage as IChatMessage, ChatMessagePayload };
