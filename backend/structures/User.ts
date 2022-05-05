@@ -11,7 +11,7 @@ class User {
     }
 
     serialize() {
-        return { username: this.name };
+        return { username: this.name, avatar: this.avatar };
     }
 }
 
