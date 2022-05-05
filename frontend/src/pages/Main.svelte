@@ -8,7 +8,7 @@
         loggedIn: boolean = false,
         username: string | null = null,
         wsConfiged = false,
-        avatar = Math.floor(Math.random() * 20);
+        avatar = Math.floor(Math.random() * 100);
 
     let wsm = new WsManager();
 
