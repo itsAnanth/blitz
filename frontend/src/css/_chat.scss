@@ -86,31 +86,35 @@ a {
     height: 100%;
     overflow-y: scroll;
     padding: 1%;
+
+    & .message {
+        user-select: none;
+        padding: 1rem;
+        width: 100%;
+        overflow-wrap: break-word;
+        margin-bottom: 0.2rem;
+        transition: background 0.2s ease;
+
+        & .meta {
+            font-size: 1rem;
+            font-weight: bold;
+            display: flex;
+            margin-bottom: 0.5rem;
+
+            & span {
+                color: #777;
+                padding-left: 0.4rem;
+            }
+        }
+
+        &:hover {
+            background: var(--light-color);
+        }
+    }
 }
 
-.chat-messages .message {
-    user-select: none;
-    padding: 1rem;
-    width: 100%;
-    overflow-wrap: break-word;
-    margin-bottom: 0.2rem;
-}
 
-.chat-messages .message:hover {
-    background: var(--light-color);
-}
 
-.chat-messages .message .meta {
-    font-size: 1rem;
-    font-weight: bold;
-    display: flex;
-    margin-bottom: 0.5rem;
-}
-
-.chat-messages .message .meta span {
-    color: #777;
-    padding-left: 0.4rem;
-}
 
 .chat-form-container {
     padding: 0.5rem 0.5rem;
