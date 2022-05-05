@@ -29,6 +29,8 @@ class WsServer {
                 const message = Message.inflate(_message);
                 if (!message) return;
 
+                console.log('event ' + message.type);
+
                 switch (message.type) {
                     case Message.types.CONNECT:
                         ws.send(Message.encode(new Message({ type: Message.types.CONNECT, data: ['authorized'] })), true);
@@ -38,7 +40,7 @@ class WsServer {
                         this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.MESSAGE_CREATE, data: [_data] })), true);
                         break;
                     case Message.types.JOIN:
-                        this.sockets.set(ws.id, new User(message.data[0], ws));
+                        this.sockets.set(ws.id, new User(message.data[0], ws, message.data[1]));
                         _data = { author: 'Blitz Bot', content: `${message.data[0]} joined the chat`, id: crypto.createHash('sha256').digest('hex') };
                         this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.JOIN, data: [_data, this.usersData()] })), true);
                         break;

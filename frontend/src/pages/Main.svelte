@@ -7,7 +7,8 @@
     let wsConnected: boolean = false,
         loggedIn: boolean = false,
         username: string | null = null,
-        wsConfiged = false;
+        wsConfiged = false,
+        avatar = Math.floor(Math.random() * 20);
 
     let wsm = new WsManager();
 
@@ -20,7 +21,7 @@
     function handleLogin(ev: any) {
         loggedIn = true;
         username = ev.detail.username;
-        wsm.send(new Message({ type: Message.types.JOIN, data: [username] }));
+        wsm.send(new Message({ type: Message.types.JOIN, data: [username, avatar] }));
     }
 
     function handleLogout() {
@@ -39,5 +40,5 @@
 {:else if !loggedIn}
     <LogIn on:login={handleLogin} />
 {:else}
-    <Chat on:logout={handleLogout} {wsm} {username} {wsConfiged} />
+    <Chat on:logout={handleLogout} {wsm} {username} {wsConfiged} {avatar} />
 {/if}

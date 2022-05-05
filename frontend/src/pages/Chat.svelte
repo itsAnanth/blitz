@@ -4,7 +4,7 @@
     import Message from "../../../shared/structures/Message";
     import { createEventDispatcher } from "svelte";
 
-    export let username: string, wsm: WsManager, wsConfiged: boolean;
+    export let username: string, wsm: WsManager, wsConfiged: boolean, avatar: number;
 
     const dispatch = createEventDispatcher();
 
@@ -31,6 +31,7 @@
                     author: message.author,
                     content: message.content,
                     id: message.id,
+                    avatar: 2
                 })
             );
 
@@ -44,6 +45,7 @@
                     author: message.author,
                     content: message.content,
                     id: message.id,
+                    avatar: 2
                 })
             );
 
@@ -63,7 +65,7 @@
         e.target.elements.msg.value = "";
         e.target.elements.msg.focus();
 
-        const chatMsg = new ChatMessage({ author: username, content: msg });
+        const chatMsg = new ChatMessage({ author: username, content: msg, avatar: avatar });
 
         wsm.send(
             new Message({
@@ -85,7 +87,16 @@
 
     function outputMessage(message: ChatMessage) {
         const div = document.createElement("div");
+        const metaWrapper = document.createElement("div");
+        const userAvatar = document.createElement('img');
+
         div.classList.add("message", message.id || "");
+        userAvatar.classList.add('avatar');
+    
+        userAvatar.src = `https://avatars.dicebear.com/api/adventurer-neutral/${message.avatar}.svg`;
+
+        metaWrapper.classList.add('meta-wrapper')
+
         const p = document.createElement("p");
         p.classList.add("meta");
         p.innerText = message.author;
@@ -94,13 +105,17 @@
             { hour: "numeric", hour12: true, minute: "numeric" }
         )}</span>`;
 
-        div.appendChild(p);
 
         const para = document.createElement("p");
         para.classList.add("text");
         para.innerText = message.content;
 
-        div.appendChild(para);
+        metaWrapper.appendChild(p);
+        metaWrapper.appendChild(para);
+
+        div.appendChild(userAvatar)
+        div.appendChild(metaWrapper)
+
         document.querySelector(".chat-messages").appendChild(div);
 
         const chatMessages = document.querySelector(".chat-messages");

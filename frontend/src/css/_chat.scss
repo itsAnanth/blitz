@@ -48,7 +48,7 @@ a {
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
-    height: 10%;
+    height: calc(1rem * 3);
     max-height: 70px;
     color: #fff;
     background: var(--dark-color-a);
@@ -83,7 +83,7 @@ a {
 .chat-main {
     display: grid;
     grid-template-columns: 1fr 4fr;
-    height: 80%;
+    height: calc(100% - (1rem * 6));
 }
 
 .chat-messages {
@@ -92,6 +92,9 @@ a {
     padding: 1%;
 
     & .message {
+        display: flex;
+        align-items: center;
+
         user-select: none;
         padding: 1rem;
         width: 100%;
@@ -99,15 +102,26 @@ a {
         margin-bottom: 0.2rem;
         transition: background 0.2s ease;
 
-        & .meta {
-            font-size: 1rem;
-            font-weight: bold;
-            display: flex;
-            margin-bottom: 0.5rem;
-
-            & span {
-                color: #777;
-                padding-left: 0.4rem;
+        & {
+            .avatar {
+                width: 3rem;
+                height: 3rem;
+                object-fit: cover;
+            }
+            
+            & .meta-wrapper {
+                padding-left: 1rem;
+                & .meta {
+                    font-size: 1rem;
+                    font-weight: bold;
+                    display: flex;
+                    margin-bottom: 0.5rem;
+        
+                    & span {
+                        color: #777;
+                        padding-left: 0.4rem;
+                    }
+                }
             }
         }
 
@@ -123,7 +137,7 @@ a {
 .chat-form-container {
     padding: 0.5rem 0.5rem;
     background-color: var(--dark-color-a);
-    height: 10%;
+    height: calc(1rem * 3);
     max-height: 70px;
     display: flex;
     justify-content: center;
@@ -256,7 +270,7 @@ input {
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     :root {
-        font-size: 8px;
+        font-size: 10px;
     }
 }
 
