@@ -4,13 +4,16 @@
     import Message from "../../../shared/structures/Message";
     import { createEventDispatcher } from "svelte";
 
-    export let username: string, wsm: WsManager, wsConfiged: boolean, avatar: number;
+    export let username: string,
+        wsm: WsManager,
+        wsConfiged: boolean,
+        avatar: number;
 
     const dispatch = createEventDispatcher();
 
     if (!wsConfiged) {
         attachListeners();
-        wsm.dispatchEvent(new Event('config'));
+        wsm.dispatchEvent(new Event("config"));
     }
 
     function attachListeners() {
@@ -20,7 +23,7 @@
 
         wsm.addEventListener("users", (ev: any) =>
             outputUsers(
-                ev.detail as unknown as { id: string; username: string }[]
+                ev.detail as unknown as { id: string; username: string, avatar: number }[]
             )
         );
 
@@ -31,7 +34,7 @@
                     author: message.author,
                     content: message.content,
                     id: message.id,
-                    avatar: 2
+                    avatar: 2,
                 })
             );
 
@@ -45,7 +48,7 @@
                     author: message.author,
                     content: message.content,
                     id: message.id,
-                    avatar: 2
+                    avatar: 2,
                 })
             );
 
@@ -65,7 +68,11 @@
         e.target.elements.msg.value = "";
         e.target.elements.msg.focus();
 
-        const chatMsg = new ChatMessage({ author: username, content: msg, avatar: avatar });
+        const chatMsg = new ChatMessage({
+            author: username,
+            content: msg,
+            avatar: avatar,
+        });
 
         wsm.send(
             new Message({
@@ -75,27 +82,42 @@
         );
     }
 
-    function outputUsers(users: { id: string; username: string }[]) {
+    function outputUsers(users: { id: string; username: string, avatar: number }[]) {
         const userList = document.getElementById("users");
         userList.innerHTML = "";
+
+        console.log(users);
+
         users.forEach((user) => {
-            const li = document.createElement("li");
-            li.innerText = user.username;
-            userList.appendChild(li);
+            const div = document.createElement("div");
+            div.classList.add("user");
+
+            const p = document.createElement("p");
+            p.innerText = user.username;
+            p.classList.add('username');
+
+            const userAvatar = document.createElement("img");
+            userAvatar.classList.add("avatar");
+            userAvatar.src = `https://avatars.dicebear.com/api/adventurer-neutral/${user.avatar}.svg`;
+
+            div.appendChild(userAvatar);
+            div.appendChild(p);
+
+            userList.appendChild(div);
         });
     }
 
     function outputMessage(message: ChatMessage) {
         const div = document.createElement("div");
         const metaWrapper = document.createElement("div");
-        const userAvatar = document.createElement('img');
+        const userAvatar = document.createElement("img");
 
         div.classList.add("message", message.id || "");
-        userAvatar.classList.add('avatar');
-    
+        userAvatar.classList.add("avatar");
+
         userAvatar.src = `https://avatars.dicebear.com/api/adventurer-neutral/${message.avatar}.svg`;
 
-        metaWrapper.classList.add('meta-wrapper')
+        metaWrapper.classList.add("meta-wrapper");
 
         const p = document.createElement("p");
         p.classList.add("meta");
@@ -105,7 +127,6 @@
             { hour: "numeric", hour12: true, minute: "numeric" }
         )}</span>`;
 
-
         const para = document.createElement("p");
         para.classList.add("text");
         para.innerText = message.content;
@@ -113,8 +134,8 @@
         metaWrapper.appendChild(p);
         metaWrapper.appendChild(para);
 
-        div.appendChild(userAvatar)
-        div.appendChild(metaWrapper)
+        div.appendChild(userAvatar);
+        div.appendChild(metaWrapper);
 
         document.querySelector(".chat-messages").appendChild(div);
 
@@ -133,10 +154,10 @@
     </header>
     <main class="chat-main">
         <div class="chat-sidebar">
-            <h3><i />Room Name:</h3>
+            <h3>Room Name:</h3>
             <h2 id="room-name">Test</h2>
-            <h3><i />Users</h3>
-            <ul id="users" />
+            <h3>Users</h3>
+            <div id="users"></div>
         </div>
         <div class="chat-messages" />
     </main>
