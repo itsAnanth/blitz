@@ -103,6 +103,7 @@ a {
         margin-bottom: 0.2rem;
         transition: background 0.2s ease;
         word-wrap: break-word;
+        white-space: initial;
 
         & {
             .avatar {
