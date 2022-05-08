@@ -9,3 +9,4 @@ server side checks for packet integrity
 encryption and accounts
 multiple rooms and authentication
 Backend optimization
+convert to react
