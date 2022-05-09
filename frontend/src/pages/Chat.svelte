@@ -1,65 +1,75 @@
 <script lang="ts">
     import ChatMessage from "../../../shared/structures/ChatMessage";
+    import ChatMsg from "./ChatMessage.svelte";
     import WsManager from "../structures/WsManager";
     import Message from "../../../shared/structures/Message";
-    import { createEventDispatcher, onMount } from "svelte";
+    import { createEventDispatcher, onMount, afterUpdate } from "svelte";
+    import { messages } from "../structures/Store";
 
     export let username: string,
         wsm: WsManager,
         wsConfiged: boolean,
         avatar: number;
-
     const dispatch = createEventDispatcher();
 
-    onMount(() => document.getElementById("msg").focus());
+    const events = {
+        userjoin: (ev: any) => {
+            const message = ev.detail.message;
+            const leaveMsg = new ChatMessage({
+                author: message.author,
+                content: message.content,
+                id: message.id,
+                avatar: 2,
+            });
 
-    if (!wsConfiged) {
-        attachListeners();
-        wsm.dispatchEvent(new Event("config"));
-    }
+            messages.set([...$messages, leaveMsg]);
 
-    function attachListeners() {
-        wsm.addEventListener("messagecreate", (ev: any) =>
-            outputMessage(ev.detail)
-        );
-
-        wsm.addEventListener("users", (ev: any) =>
+            outputUsers(ev.detail.users);
+        },
+        users: (ev: any) =>
             outputUsers(
                 ev.detail as unknown as {
                     id: string;
                     username: string;
                     avatar: number;
                 }[]
-            )
-        );
-
-        wsm.addEventListener("userjoin", (ev: any) => {
+            ),
+        userleave: (ev: any) => {
             const message = ev.detail.message;
-            outputMessage(
-                new ChatMessage({
-                    author: message.author,
-                    content: message.content,
-                    id: message.id,
-                    avatar: 2,
-                })
-            );
+            const joinMsg = new ChatMessage({
+                author: message.author,
+                content: message.content,
+                id: message.id,
+                avatar: 2,
+            });
+
+            messages.set([...$messages, joinMsg]);
 
             outputUsers(ev.detail.users);
-        });
+        },
+        messagecreate: (ev: any) => {
+            messages.set([...$messages, ev.detail]);
+            console.log($messages);
+        },
+    };
 
-        wsm.addEventListener("userleave", (ev: any) => {
-            const message = ev.detail.message;
-            outputMessage(
-                new ChatMessage({
-                    author: message.author,
-                    content: message.content,
-                    id: message.id,
-                    avatar: 2,
-                })
-            );
+    onMount(() => {
+        attachListeners();
+        wsm.dispatchEvent(new Event("config"));
+        document.getElementById("msg").focus();
+    });
 
-            outputUsers(ev.detail.users);
-        });
+    afterUpdate(() => {
+        const chatMessages = document.querySelector(".chat-messages");
+
+        chatMessages.scrollTo(0, chatMessages.scrollHeight);
+    });
+
+    function attachListeners() {
+        if (wsConfiged) return;
+        for (const [k, v] of Object.entries(events)) {
+            wsm.addEventListener(k, v);
+        }
     }
 
     function onSubmit(e: any) {
@@ -112,51 +122,14 @@
             userList.appendChild(div);
         });
     }
-
-    function outputMessage(message: ChatMessage) {
-        const div = document.createElement("div");
-        const metaWrapper = document.createElement("div");
-        const userAvatar = document.createElement("img");
-
-        div.classList.add("message", message.id || "");
-        userAvatar.classList.add("avatar");
-
-        userAvatar.src = `https://avatars.dicebear.com/api/adventurer-neutral/${message.avatar}.svg`;
-
-        metaWrapper.classList.add("meta-wrapper");
-
-        const p = document.createElement("p");
-        p.classList.add("meta");
-        p.innerText = message.author;
-        p.innerHTML += ` <span>${new Date(message.timestamp).toLocaleString(
-            "en-US",
-            { hour: "numeric", hour12: true, minute: "numeric" }
-        )}</span>`;
-
-        const para = document.createElement("p");
-        para.classList.add("text");
-        para.innerText = message.content;
-
-        metaWrapper.appendChild(p);
-        metaWrapper.appendChild(para);
-
-        div.appendChild(userAvatar);
-        div.appendChild(metaWrapper);
-
-        document.querySelector(".chat-messages").appendChild(div);
-
-        const chatMessages = document.querySelector(".chat-messages");
-
-        chatMessages.scrollTo(0, chatMessages.scrollHeight);
-    }
 </script>
 
 <div class="chat-container">
     <header class="chat-header">
         <h1>Blitz</h1>
-        <div id="leave-btn" on:click={() => dispatch("logout")} class="btn">
+        <!-- <div id="leave-btn" on:click={() => dispatch("logout")} class="btn">
             Leave Room
-        </div>
+        </div> -->
     </header>
     <main class="chat-main">
         <div class="chat-sidebar">
@@ -165,7 +138,11 @@
             <h3>Users</h3>
             <div id="users" />
         </div>
-        <div class="chat-messages" />
+        <div class="chat-messages">
+            {#each $messages as message}
+                <ChatMsg data={message} />
+            {/each}
+        </div>
     </main>
 
     <div class="chat-form-container">
