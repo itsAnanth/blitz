@@ -1,3 +1,3 @@
-- [] server packaet integrity check
-- [] user account / authentication
-- [] refactor packet structures
+- [ ] server packaet integrity check
+- [ ] user account / authentication
+- [ ] refactor packet structures
