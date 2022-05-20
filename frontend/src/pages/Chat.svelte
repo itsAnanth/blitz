@@ -11,7 +11,7 @@
         wsm: WsManager,
         wsConfiged: boolean,
         avatar: number;
-        
+
     // const dispatch = createEventDispatcher();
 
     const events = {
@@ -44,7 +44,6 @@
         },
         messagecreate: (ev: any) => {
             messages.set([...$messages, ev.detail]);
-            console.log($messages);
         },
     };
 
