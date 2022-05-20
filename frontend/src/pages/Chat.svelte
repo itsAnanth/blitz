@@ -1,16 +1,18 @@
 <script lang="ts">
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import ChatMsg from "./ChatMessage.svelte";
+    import Users from "./Users.svelte";
     import WsManager from "../structures/WsManager";
     import Message from "../../../shared/structures/Message";
     import { createEventDispatcher, onMount, afterUpdate } from "svelte";
-    import { messages } from "../structures/Store";
+    import { messages, users } from "../structures/Store";
 
     export let username: string,
         wsm: WsManager,
         wsConfiged: boolean,
         avatar: number;
-    const dispatch = createEventDispatcher();
+        
+    // const dispatch = createEventDispatcher();
 
     const events = {
         userjoin: (ev: any) => {
@@ -23,17 +25,9 @@
             });
 
             messages.set([...$messages, leaveMsg]);
-
-            outputUsers(ev.detail.users);
+            users.set([...$users, ev.detail.users]);
         },
-        users: (ev: any) =>
-            outputUsers(
-                ev.detail as unknown as {
-                    id: string;
-                    username: string;
-                    avatar: number;
-                }[]
-            ),
+        users: (ev: any) => users.set([...$users, ev.detail.users]),
         userleave: (ev: any) => {
             const message = ev.detail.message;
             const joinMsg = new ChatMessage({
@@ -44,8 +38,9 @@
             });
 
             messages.set([...$messages, joinMsg]);
+            users.set([...$users, ev.detail.users]);
 
-            outputUsers(ev.detail.users);
+            // outputUsers(ev.detail.users);
         },
         messagecreate: (ev: any) => {
             messages.set([...$messages, ev.detail]);
@@ -98,30 +93,6 @@
         );
     }
 
-    function outputUsers(
-        users: { id: string; username: string; avatar: number }[]
-    ) {
-        const userList = document.getElementById("users");
-        userList.innerHTML = "";
-
-        users.forEach((user) => {
-            const div = document.createElement("div");
-            div.classList.add("user");
-
-            const p = document.createElement("p");
-            p.innerText = user.username;
-            p.classList.add("username");
-
-            const userAvatar = document.createElement("img");
-            userAvatar.classList.add("avatar");
-            userAvatar.src = `https://avatars.dicebear.com/api/adventurer-neutral/${user.avatar}.svg`;
-
-            div.appendChild(userAvatar);
-            div.appendChild(p);
-
-            userList.appendChild(div);
-        });
-    }
 </script>
 
 <div class="chat-container">
@@ -136,7 +107,11 @@
             <h3>Room Name:</h3>
             <h2 id="room-name">Test</h2>
             <h3>Users</h3>
-            <div id="users" />
+            <div id="users">
+                {#each $users as user}
+                    <Users data={user} />
+                {/each}
+            </div>
         </div>
         <div class="chat-messages">
             {#each $messages as message}
