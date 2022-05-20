@@ -25,7 +25,7 @@
             });
 
             messages.set([...$messages, leaveMsg]);
-            users.set([...$users, ev.detail.users]);
+            users.set([...$users, ...ev.detail.users]);
         },
         users: (ev: any) => users.set([...$users, ev.detail.users]),
         userleave: (ev: any) => {
