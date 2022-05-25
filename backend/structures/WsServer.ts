@@ -5,6 +5,7 @@ import User from "./User";
 import fs from 'fs';
 import Event from "../utils/Event";
 import Logger from '../utils/Logger';
+import Session from "../utils/Session";
 
 class WsServer {
 
@@ -12,12 +13,14 @@ class WsServer {
     sockets: Map<string, User>;
     port: number;
     events: Map<number, Event>;
+    session: Session;
 
     constructor(app: TemplatedApp, { port }: { port: number }) {
         this.app = app;
         this.sockets = new Map();
         this.events = new Map();
         this.port = port;
+        this.session = new Session();
     }
 
     async init() {
@@ -33,7 +36,9 @@ class WsServer {
             this.events.set(event.type, event);
         }
 
-        Logger.log(this.events);
+        await this.session.generateKey();
+
+        Logger.log(this.events, this.session.sessionKey);
     }
 
     usersData() {
@@ -58,6 +63,8 @@ class WsServer {
             close: (ws, code, _message) => {
                 const user = this.sockets.get(ws.id);
                 this.sockets.delete(ws.id);
+
+                if (!user) return;
 
                 const data = { author: 'Blitz Bot', content: `${user.username} left the chat`, id: crypto.createHash('sha256').digest('hex') };
                 this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.LEAVE, data: [data, this.usersData()] })), true);
