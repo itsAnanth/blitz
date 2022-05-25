@@ -8,7 +8,8 @@ enum MessageType {
     MESSAGE_DELETE,
     MESSAGE_EDIT,
     PING,
-    PONG
+    PONG,
+    SESSION
 }
 
 export { MessageType };
