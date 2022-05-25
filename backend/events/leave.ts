@@ -5,7 +5,7 @@ import Message from "../../shared/structures/Message";
 import crypto from 'crypto';
 
 export default new Event({
-    type: MessageType.JOIN,
+    type: MessageType.LEAVE,
     callback(this: WsServer, ws, message) {
         this.sockets.delete(ws.id);
         const data = { author: 'Blitz Bot', content: `${message.data[0]} left the chat`, id: crypto.createHash('sha256').digest('hex') };
