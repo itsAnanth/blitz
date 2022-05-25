@@ -2,17 +2,38 @@ import { TemplatedApp } from "uWebSockets.js";
 import crypto from 'crypto';
 import Message from '../../shared/structures/Message';
 import User from "./User";
+import fs from 'fs';
+import Event from "../utils/Event";
+import Logger from '../utils/Logger';
 
 class WsServer {
-    
+
     app: TemplatedApp;
     sockets: Map<string, User>;
     port: number;
+    events: Map<number, Event>;
 
     constructor(app: TemplatedApp, { port }: { port: number }) {
         this.app = app;
         this.sockets = new Map();
+        this.events = new Map();
         this.port = port;
+    }
+
+    async init() {
+        const eventsPath = fs.readdirSync('./events');
+
+        if (eventsPath.length === 0) return Logger.log('empty server events');
+
+        for (let i = 0; i < eventsPath.length; i++) {
+            const event = (await import(`../events/${eventsPath[i]}`)).default as Event;
+
+            if (this.events.has(event.type)) continue;
+
+            this.events.set(event.type, event);
+        }
+
+        Logger.log(this.events);
     }
 
     usersData() {
@@ -24,43 +45,24 @@ class WsServer {
             open: (ws) => {
                 ws.id = crypto.randomBytes(16).toString('hex');
                 ws.subscribe("STATE/");
-                console.log(`Client connected with id ${ws.id}`);
+                Logger.log(`Client connected with id ${ws.id}`);
             },
             message: (ws, _message) => {
-                let _data;
                 const message = Message.inflate(_message);
                 if (!message) return;
 
-                console.log(`${message.type}`);
+                Logger.log(`${message.type}`);
 
-                switch (message.type) {
-                    case Message.types.CONNECT:
-                        ws.send(Message.encode(new Message({ type: Message.types.CONNECT, data: ['authorized'] })), true);
-                        break;
-                    case Message.types.MESSAGE_CREATE:
-                        _data = { ...message.data[0], id: crypto.createHash('sha256').digest('hex') };
-                        this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.MESSAGE_CREATE, data: [_data] })), true);
-                        break;
-                    case Message.types.JOIN:
-                        console.log(`user joined, username -> ${message.data[0]} avatar -> ${message.data[1]}`)
-                        this.sockets.set(ws.id, new User(message.data[0], ws, message.data[1], message.data[2]));
-                        _data = { author: 'Blitz Bot', content: `${message.data[0]} joined the chat`, id: crypto.createHash('sha256').digest('hex') };
-                        this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.JOIN, data: [_data, this.usersData()] })), true);
-                        break;
-                    case Message.types.USERS:
-                        ws.send(this.usersData(), true);
-                        break;
-                    case Message.types.LEAVE:
-                        this.sockets.delete(ws.id);
-                        _data = { author: 'Blitz Bot', content: `${message.data[0]} left the chat`, id: crypto.createHash('sha256').digest('hex') };
-                        this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.LEAVE, data: [_data, this.usersData()] })), true);
-                        break;
-                        
-                }
+                this.events.get(message.type).callback.call(this, ws, message);
             },
             close: (ws, code, _message) => {
+                const user = this.sockets.get(ws.id);
                 this.sockets.delete(ws.id);
-                console.log('client disconnected with code ' + code)
+
+                const data = { author: 'Blitz Bot', content: `${user.username} left the chat`, id: crypto.createHash('sha256').digest('hex') };
+                this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.LEAVE, data: [data, this.usersData()] })), true);
+
+                Logger.log('client disconnected with code ' + code)
             },
             idleTimeout: 32,
             maxPayloadLength: undefined
