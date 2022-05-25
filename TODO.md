@@ -1,4 +1,5 @@
 - [x] server packet integrity check
+- [ ] end to end encryption
 - [ ] user account / authentication
 - [ ] refactor packet structures
 - [ ] optimize backend
