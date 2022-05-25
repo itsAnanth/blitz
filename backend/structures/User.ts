@@ -1,17 +1,20 @@
 import type { WebSocket } from 'uWebSockets.js';
-import type { IUser } from '../types/User';
-
-interface User extends IUser { };
 
 class User {
-    constructor(name: string, ws: WebSocket, avatar: number) {
+    name: string;
+    ws: WebSocket;
+    avatar: number;
+    publicKey: JsonWebKey;
+
+    constructor(name: string, ws: WebSocket, avatar: number, publicKey: JsonWebKey) {
         this.name = name;
         this.ws = ws;
         this.avatar = avatar;
+        this.publicKey = publicKey;
     }
 
     serialize() {
-        return { username: this.name, avatar: this.avatar };
+        return { username: this.name, avatar: this.avatar, publicKey: this.publicKey };
     }
 }
 
