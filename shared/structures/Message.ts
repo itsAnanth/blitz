@@ -10,6 +10,14 @@ class Message {
         this.data = data;
     }
 
+    static typesArray() {
+        const arr = [];
+        for (const i in MessageType) {
+            arr.push(MessageType[i]);
+        }
+        return arr;
+    }
+
     static types = MessageType;
 
     static inflate(data: ArrayBuffer | DataView): Message | false {
@@ -36,7 +44,7 @@ class Message {
         return _encode(Message.deflate(data));
     }
 
-    static safeSend(send: WebSocket["send"]) {
+    static safeSend(send: any) {
         return (data: Message | Uint8Array) => {
             if (!(data instanceof Uint8Array)) data = Message.encode(data);
             try {
