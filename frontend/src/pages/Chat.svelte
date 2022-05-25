@@ -5,7 +5,9 @@
     import WsManager from "../structures/WsManager";
     import Message from "../../../shared/structures/Message";
     import { createEventDispatcher, onMount, afterUpdate } from "svelte";
-    import { messages, users } from "../structures/Store";
+    import { keys, messages, users } from "../structures/Store";
+    import CryptoClient from "../structures/CryptoClient";
+    import type { Ikeys } from '../structures/Store';
 
     export let username: string,
         wsm: WsManager,
@@ -39,11 +41,15 @@
 
             messages.set([...$messages, joinMsg]);
             users.set([...$users, ev.detail.users]);
-
-            // outputUsers(ev.detail.users);
         },
-        messagecreate: (ev: any) => {
+        messagecreate: async(ev: any) => {
+            const decryptedText = await CryptoClient.decrypt(ev.detail.content, ($keys as Ikeys).derivedKey)
+            ev.detail.content = decryptedText;
             messages.set([...$messages, ev.detail]);
+        },
+        session: async(ev: any) => {
+            const derived = await CryptoClient.deriveKey(ev.detail, ($keys as Ikeys).privateKeyJwk);
+            keys.set({ ...$keys, sessionKey: ev.detail, derivedKey: derived });
         },
     };
 
@@ -66,7 +72,7 @@
         }
     }
 
-    function onSubmit(e: any) {
+    async function onSubmit(e: any) {
         e.preventDefault();
 
         let msg: string = e.target.elements.msg.value;
@@ -78,11 +84,15 @@
         e.target.elements.msg.value = "";
         e.target.elements.msg.focus();
 
+        const key = await CryptoClient.deriveKey(($keys as Ikeys).sessionKey, ($keys as Ikeys).privateKeyJwk)
+        const encryptedMessage = await CryptoClient.encrypt(msg, key);
+
         const chatMsg = new ChatMessage({
             author: username,
-            content: msg,
+            content: encryptedMessage,
             avatar: avatar,
         });
+
 
         wsm.send(
             new Message({
@@ -91,7 +101,6 @@
             })
         );
     }
-
 </script>
 
 <div class="chat-container">

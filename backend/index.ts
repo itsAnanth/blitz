@@ -1,10 +1,12 @@
 import { config } from 'dotenv';
+import { webcrypto } from 'node:crypto';
 
 config();
 
 import { App } from 'uWebSockets.js';
 import WsServer from './structures/WsServer';
 import Logger from './utils/Logger';
+import Session from './utils/Session';
 
 declare module 'uWebSockets.js' {
     interface WebSocket {
@@ -21,4 +23,9 @@ const server = new WsServer(app, { port: PORT });
 
 server.init();
 server.start();
+
+
+new Session().generateKey();
+
+
 

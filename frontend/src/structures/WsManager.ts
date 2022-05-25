@@ -39,12 +39,17 @@ class WsManager extends EventTarget {
 
             if (!message) return;
 
+
             let eventName, detail, usersData;
 
             switch (message.type) {
                 case Message.types.CONNECT:
                     eventName = 'connect';
-                    detail = null;
+                    detail = message.data[0];
+                    break;
+                case Message.types.SESSION:
+                    eventName = 'session';
+                    detail = message.data[0];
                     break;
                 case Message.types.MESSAGE_CREATE:
                     eventName = 'messagecreate';
@@ -64,7 +69,6 @@ class WsManager extends EventTarget {
                     detail = { message: message.data[0], users: usersData ? usersData.data : [] };
                     break;
             }
-
             this.dispatchEvent(new CustomEvent(eventName, { detail: detail }));
         })
     }
