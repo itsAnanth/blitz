@@ -1,12 +1,13 @@
 import { config } from 'dotenv';
-import { webcrypto } from 'node:crypto';
 
 config();
 
 import { App } from 'uWebSockets.js';
 import WsServer from './structures/WsServer';
-import Logger from './utils/Logger';
+import Logger from '../shared/structures/Logger';
 import Session from './utils/Session';
+
+Logger.DEV = process.env.ENV === 'DEV';
 
 declare module 'uWebSockets.js' {
     interface WebSocket {

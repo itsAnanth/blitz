@@ -4,7 +4,7 @@ import Message from '../../shared/structures/Message';
 import User from "./User";
 import fs from 'fs';
 import Event from "../utils/Event";
-import Logger from '../utils/Logger';
+import Logger from '../../shared/structures/Logger';
 import Session from "../utils/Session";
 
 class WsServer {
