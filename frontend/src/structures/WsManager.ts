@@ -1,4 +1,5 @@
 import ChatMessage from '../../../shared/structures/ChatMessage';
+import Logger from '../../../shared/structures/Logger';
 import Message from '../../../shared/structures/Message';
 import type { IWSM } from '../types/WsManager';
 
@@ -39,6 +40,8 @@ class WsManager extends EventTarget {
 
             if (!message) return;
 
+            Logger.log(message.data)
+
 
             let eventName, detail, usersData;
 
@@ -49,7 +52,7 @@ class WsManager extends EventTarget {
                     break;
                 case Message.types.SESSION:
                     eventName = 'session';
-                    detail = message.data[0];
+                    detail = { sessionKey: message.data[0], iv: message.data[1] };
                     break;
                 case Message.types.MESSAGE_CREATE:
                     eventName = 'messagecreate';
