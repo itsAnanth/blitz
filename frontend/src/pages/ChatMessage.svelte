@@ -13,13 +13,13 @@
     <div class="meta-wrapper">
         <p class="meta">
             {data.author}
-            <span
-                >{new Date(data.timestamp).toLocaleString("en-US", {
+            <span>
+                {new Date(data.timestamp).toLocaleString("en-US", {
                     hour: "numeric",
                     hour12: true,
                     minute: "numeric",
-                })}</span
-            >
+                })}
+            </span>
         </p>
         <p class="text">{data.content}</p>
     </div>
