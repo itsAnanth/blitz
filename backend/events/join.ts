@@ -12,6 +12,6 @@ export default new Event({
         this.sockets.set(ws.id, new User({ username: message.data[0], ws, avatar: message.data[1], publicKey: message.data[2] }));
         const data = { author: 'Blitz Bot', content: `${message.data[0]} joined the chat`, id: crypto.createHash('sha256').digest('hex') };
         this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.JOIN, data: [data, this.usersData()] })), true);
-        ws.send(Message.encode(new Message({ type: Message.types.SESSION, data: [this.session.sessionKey] })), true);
+        ws.send(Message.encode(new Message({ type: Message.types.SESSION, data: [this.session.sessionKey, this.session.iv] })), true);
     },
 })
