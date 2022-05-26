@@ -19,12 +19,6 @@ class Session extends events {
         this.sessionKey = null;
         this.iv = null;
         this.i = 0;
-
-        setInterval(async() => {
-            await this.generateKey();
-            this.emit('expired');
-            console.log(`${this.i++} session`)
-        }, 5000)
     }
 
     async generateKey() {
