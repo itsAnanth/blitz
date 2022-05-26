@@ -36,11 +36,14 @@ class WsServer {
             this.events.set(event.type, event);
         }
 
-        this.session.on('expired', () => {
+        this.session.on('expired', async () => {
+            await this.session.generateKey();
+            Logger.log(`${this.session.i++} session`)
             this.app.publish('STATE/', Message.encode(
                 new Message({ type: Message.types.SESSION, data: this.session.serialize() })
             ), true)
         })
+
         await this.session.generateKey();
 
         Logger.log(this.events, this.session.sessionKey);
@@ -64,6 +67,8 @@ class WsServer {
                 Logger.log(`${message.type}`);
 
                 this.events.get(message.type).callback.call(this, ws, message);
+                const watchlist = [Message.types.JOIN, Message.types.LEAVE, Message.types.MESSAGE_CREATE];
+                watchlist.includes(message.type) && (this.session.emit('expired'));
             },
             close: (ws, code, _message) => {
                 const user = this.sockets.get(ws.id);
@@ -73,7 +78,7 @@ class WsServer {
 
                 const data = { author: 'Blitz Bot', content: `${user.username} left the chat`, id: crypto.createHash('sha256').digest('hex') };
                 this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.LEAVE, data: [data, this.usersData()] })), true);
-
+                this.session.emit('expired');
                 Logger.log('client disconnected with code ' + code)
             },
             idleTimeout: 32,
