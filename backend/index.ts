@@ -15,9 +15,6 @@ declare module 'uWebSockets.js' {
     }
 }
 
-
-Logger.DEV && console.log(`Log level = ${process.env.LOG_LEVEL}`)
-
 const PORT = Number(process.env.PORT) || 8000;
 const app = App();
 const server = new WsServer(app, { port: PORT });
