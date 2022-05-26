@@ -70,12 +70,12 @@ class WsServer {
                     Logger.log(message);
                     return;
                 }
-                
+
                 Logger.log('[' + `%c${Message.types[message.type]}` + '%c]', 'color: cyan', 'color: white');
 
                 this.events.get(message.type).callback.call(this, ws, message);
                 const watchlist = [Message.types.JOIN, Message.types.LEAVE, Message.types.MESSAGE_CREATE];
-                watchlist.includes(message.type) && (this.session.emit('expired'));
+                // watchlist.includes(message.type) && (this.session.emit('expired'));
             },
             close: (ws, code, _message) => {
                 const user = this.sockets.get(ws.id);
@@ -85,7 +85,7 @@ class WsServer {
 
                 const data = { author: 'Blitz Bot', content: `${user.username} left the chat`, id: crypto.createHash('sha256').digest('hex') };
                 this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.LEAVE, data: [data, this.usersData()] })), true);
-                this.session.emit('expired');
+                // this.session.emit('expired');
                 Logger.log('client disconnected with code ' + code)
             },
             idleTimeout: 32,
