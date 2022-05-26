@@ -6,6 +6,7 @@ import fs from 'fs';
 import Event from "../utils/Event";
 import Logger from '../../shared/structures/Logger';
 import Session from "../utils/Session";
+import check from "../utils/packetsChecker";
 
 class WsServer {
 
@@ -64,7 +65,13 @@ class WsServer {
                 const message = Message.inflate(_message);
                 if (!message) return;
 
-                Logger.log(`${message.type}`);
+                if (check(message)) {
+                    Logger.error('malformed packet quitting')
+                    Logger.log(message);
+                    return;
+                }
+                
+                Logger.log('[' + `%c${Message.types[message.type]}` + '%c]', 'color: cyan', 'color: white');
 
                 this.events.get(message.type).callback.call(this, ws, message);
                 const watchlist = [Message.types.JOIN, Message.types.LEAVE, Message.types.MESSAGE_CREATE];
