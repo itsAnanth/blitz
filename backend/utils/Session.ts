@@ -1,4 +1,4 @@
-import { JsonWebKey } from 'crypto';
+import crypto, { JsonWebKey } from 'crypto';
 import { webcrypto } from 'node:crypto';
 import events from 'events';
 
@@ -11,15 +11,15 @@ const subtle = webcrypto.subtle as unknown as any;
 class Session extends events {
 
     sessionKey: JsonWebKey;
+    iv: Buffer;
 
     constructor() {
         super();
         this.sessionKey = null;
-
+        this.iv = null;
     }
 
     async generateKey() {
-
         const keyPair = await subtle.generateKey(
             {
                 name: "ECDH",
@@ -34,15 +34,17 @@ class Session extends events {
             keyPair.publicKey
         );
 
-        // const privateKeyJwk = await subtle.exportKey(
-        //     "jwk",
-        //     keyPair.privateKey
-        // );
+        const privateKeyJwk = await subtle.exportKey(
+            "jwk",
+            keyPair.privateKey
+        );
+
+        const iv = crypto.randomBytes(16);;
 
         this.sessionKey = publicKeyJwk;
+        this.iv = iv;
 
-        // console.log(this.sessionKey);
-
+        return { privateKeyJwk, publicKeyJwk, iv }
     }
 
 }
