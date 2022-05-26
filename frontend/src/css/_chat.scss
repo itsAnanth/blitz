@@ -108,6 +108,7 @@ a {
             width: 3rem;
             height: 3rem;
             object-fit: cover;
+            border-radius: 50%;
         }
 
         .meta-wrapper {
@@ -285,6 +286,7 @@ input:focus {
         width: 3rem;
         height: 3rem;
         object-fit: cover;
+        border-radius: 50%;
     }
 
     .username {
