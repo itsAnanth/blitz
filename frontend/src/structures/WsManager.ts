@@ -40,7 +40,7 @@ class WsManager extends EventTarget {
 
             if (!message) return;
 
-            Logger.log(message.data)
+            console.log('[' + `%c${Message.types[message.type]}` + '%c]', 'color: cyan', 'color: white');
 
 
             let eventName, detail, usersData;
