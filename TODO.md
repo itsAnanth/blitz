@@ -1,5 +1,6 @@
 - [x] server packet integrity check
-- [ ] end to end encryption
+- [x] end to end encryption
+- [x] refactor packet structures
+- [x] optimize backend
+- [x] responsive UI
 - [ ] user account / authentication
-- [ ] refactor packet structures
-- [ ] optimize backend
