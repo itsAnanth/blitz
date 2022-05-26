@@ -23,7 +23,4 @@ server.init();
 server.start();
 
 
-new Session().generateKey();
-
-
 

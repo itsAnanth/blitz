@@ -36,6 +36,11 @@ class WsServer {
             this.events.set(event.type, event);
         }
 
+        this.session.on('expired', () => {
+            this.app.publish('STATE/', Message.encode(
+                new Message({ type: Message.types.SESSION, data: this.session.serialize() })
+            ), true)
+        })
         await this.session.generateKey();
 
         Logger.log(this.events, this.session.sessionKey);

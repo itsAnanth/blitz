@@ -12,11 +12,19 @@ class Session extends events {
 
     sessionKey: JsonWebKey;
     iv: Buffer;
+    i: number;
 
     constructor() {
         super();
         this.sessionKey = null;
         this.iv = null;
+        this.i = 0;
+
+        setInterval(async() => {
+            await this.generateKey();
+            this.emit('expired');
+            console.log(`${this.i++} session`)
+        }, 5000)
     }
 
     async generateKey() {
@@ -45,6 +53,10 @@ class Session extends events {
         this.iv = iv;
 
         return { privateKeyJwk, publicKeyJwk, iv }
+    }
+
+    serialize() {
+        return [this.sessionKey, this.iv];
     }
 
 }
