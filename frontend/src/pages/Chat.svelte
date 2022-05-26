@@ -58,9 +58,9 @@
 <div class="chat-container">
     <header class="chat-header">
         <h1>Blitz</h1>
-        <div id="leave-btn" on:click={() => dispatch("logout")} class="btn">
+        <!-- <div id="leave-btn" on:click={() => dispatch("logout")} class="btn">
             Leave Room
-        </div>
+        </div> -->
     </header>
     <main class="chat-main">
         <div class="chat-sidebar">

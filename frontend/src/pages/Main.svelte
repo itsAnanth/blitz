@@ -58,6 +58,7 @@
                 $keys.privateKeyJwk
             );
             keys.set({ ...$keys, sessionKey: ev.detail, derivedKey: derived, iv: ev.detail.iv });
+            Logger.log(`session update`, $keys);
         },
     };
 
