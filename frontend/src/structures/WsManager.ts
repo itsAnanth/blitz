@@ -22,7 +22,7 @@ class WsManager extends EventTarget {
 
     connect() {
         const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-        const hostname = window.location.hostname === 'localhost' ? 'localhost:8000' : 'blitzv1.herokuapp.com';
+        const hostname = window.location.hostname === 'localhost' ? 'localhost:8000' : 'blitzv3.herokuapp.com';
 
         const wsURL = `${protocol}://${hostname}`;
 
