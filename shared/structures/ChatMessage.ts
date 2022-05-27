@@ -1,12 +1,17 @@
-import type { ChatMessagePayload, IChatMessage } from '../types/ChatMessage';
-
-interface ChatMessage extends IChatMessage { };
-
 class ChatMessage {
-    constructor({ author, content, timestamp = Date.now(), id = null, avatar }: ChatMessagePayload ) {
+
+    author: string;
+    content: string;
+    timestamp: number;
+    id: string;
+    avatar: number;
+
+    constructor({ author, content, timestamp, id, avatar }: {
+        author: string, content: string, timestamp?: number, id: string, avatar: number
+    } ) {
         this.author = author;
         this.content = content;
-        this.timestamp = timestamp;
+        this.timestamp = timestamp ?? Date.now();
         this.id = id;
         this.avatar = avatar;
     }
