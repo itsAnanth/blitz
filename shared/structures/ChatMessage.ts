@@ -5,15 +5,17 @@ class ChatMessage {
     timestamp: number;
     id: string;
     avatar: number;
+    authorId?: string;
 
-    constructor({ author, content, timestamp, id, avatar }: {
-        author: string, content: string, timestamp?: number, id: string, avatar: number
+    constructor({ author, content, timestamp, id, avatar, authorId }: {
+        author: string, content: string, timestamp?: number, id: string, avatar: number, authorId?: string
     } ) {
         this.author = author;
         this.content = content;
         this.timestamp = timestamp ?? Date.now();
         this.id = id;
         this.avatar = avatar;
+        this.authorId = authorId ?? null;
     }
 
     serialize() {
