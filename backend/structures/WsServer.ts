@@ -1,5 +1,4 @@
 import { TemplatedApp } from "uWebSockets.js";
-import crypto from 'crypto';
 import Message from '../../shared/structures/Message';
 import User from "./User";
 import fs from 'fs';
@@ -7,6 +6,7 @@ import Event from "../utils/Event";
 import Logger from '../../shared/structures/Logger';
 import Session from "../utils/Session";
 import check from "../utils/packetsChecker";
+import Utils from "../utils/Utils";
 
 class WsServer {
 
@@ -57,7 +57,7 @@ class WsServer {
     start() {
         this.app.ws('/*', {
             open: (ws) => {
-                ws.id = crypto.randomBytes(16).toString('hex');
+                ws.id = Utils.getUserId();
                 ws.subscribe("STATE/");
                 Logger.log(`Client connected with id ${ws.id}`);
             },
@@ -83,7 +83,7 @@ class WsServer {
 
                 if (!user) return;
 
-                const data = { author: 'Blitz Bot', content: `${user.username} left the chat`, id: crypto.createHash('sha256').digest('hex') };
+                const data = { author: 'Blitz Bot', content: `${user.username} left the chat`, id: Utils.getMessageId() };
                 this.app.publish('STATE/', Message.encode(new Message({ type: Message.types.LEAVE, data: [data, this.usersData()] })), true);
                 // this.session.emit('expired');
                 Logger.log('client disconnected with code ' + code)
