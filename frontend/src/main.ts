@@ -1,14 +1,16 @@
 import App from './pages/Main.svelte';
 import Logger from '../../shared/structures/Logger';
+import CryptoClient from './structures/CryptoClient';
 
+let dev = false;
 declare global {
     interface Window {
-        DEV?: boolean;       
+        __cryptoclient?: CryptoClient;    
     }
 }
 
-window.location.hostname === 'localhost' && (window.DEV = true);
-Logger.DEV = window.DEV ?? false;
+dev = window.location.hostname === 'localhost';
+Logger.DEV = dev ?? false;
 
 
 const app = new App({
@@ -16,3 +18,4 @@ const app = new App({
 });
 
 export default app;
+export { dev };
