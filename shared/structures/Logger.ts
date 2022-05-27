@@ -26,6 +26,10 @@ class Logger {
         if (!Logger.DEV) return;
         console.debug.apply(this, arguments as any);
     }
+
+    static logc(text: string, color: string) {
+        console.log('%c[' + `%c${text}` + '%c]', 'color: white', `color: ${color}`, 'color: white');
+    }
 }
 
 export default Logger;

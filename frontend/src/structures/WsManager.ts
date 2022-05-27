@@ -2,6 +2,7 @@ import ChatMessage from '../../../shared/structures/ChatMessage';
 import Logger from '../../../shared/structures/Logger';
 import Message from '../../../shared/structures/Message';
 import type { IWSM } from '../types/WsManager';
+import { Updates } from '../../../shared/types/Updates';
 
 interface WsManager extends IWSM { };
 
@@ -32,23 +33,22 @@ class WsManager extends EventTarget {
 
         ws.binaryType = 'arraybuffer';
 
-        ws.addEventListener('open', () => this.wsHandshake() && console.log('ws open'));
+        ws.addEventListener('open', () => this.wsHandshake() && Logger.logc('WS_OPEN', '#A020F0'));
         ws.addEventListener('error', console.error);
-        ws.addEventListener('close', () => console.log('ws closed'));
+        ws.addEventListener('close', () => Logger.logc('WS_CLOSE', 'red'));
         ws.addEventListener('message', (event) => {
             const message = Message.inflate(event.data);
 
             if (!message) return;
 
-            console.log('[' + `%c${Message.types[message.type]}` + '%c]', 'color: cyan', 'color: white');
-
+            Logger.logc(Message.types[message.type], 'cyan');
 
             let eventName, detail, usersData;
 
             switch (message.type) {
                 case Message.types.CONNECT:
                     eventName = 'connect';
-                    detail = message.data[0];
+                    (<Updates.Client.CONNECT>detail) = { clientId: (<Updates.Server.CONNECT>message.data)[0] };
                     break;
                 case Message.types.SESSION:
                     eventName = 'session';
@@ -56,7 +56,7 @@ class WsManager extends EventTarget {
                     break;
                 case Message.types.MESSAGE_CREATE:
                     eventName = 'messagecreate';
-                    detail = message.data[0];
+                    detail = { messageId: message.data[0], senderId: message.data[1], senderPublicKey: message.data[2], data: message.data[3] };
                     break;
                 case Message.types.JOIN:
                     eventName = 'userjoin';
