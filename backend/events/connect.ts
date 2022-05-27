@@ -6,6 +6,6 @@ import Message from "../../shared/structures/Message";
 export default new Event({
     type: MessageType.CONNECT,
     callback(this: WsServer, ws, _message) {
-        ws.send(Message.encode(new Message({ type: Message.types.CONNECT, data: ['authorized'] })), true);
+        ws.send(Message.encode(new Message({ type: Message.types.CONNECT, data: [ws.id] })), true);
     },
 })
