@@ -112,7 +112,9 @@ a {
         }
 
         .meta-wrapper {
+            overflow-x: hidden;
             padding-left: 1rem;
+            width: 100%;
 
             .text {
                 font-size: 1rem;
@@ -129,6 +131,8 @@ a {
             }
 
             .meta {
+                position: relative;
+                width: 100%;
                 font-size: 1rem;
                 font-weight: bold;
                 display: flex;
@@ -138,12 +142,32 @@ a {
                     color: #777;
                     padding-left: 0.4rem;
                 }
+
+                .active {
+                    right: 0;
+                }
+
+                .inactive {
+                    right: 200vh;
+                }
+
+                .close {
+                    z-index: 1000;
+                    position: absolute;
+                    right: -200vh;
+                    color: rgb(31, 29, 29);
+                    transition: all 0.2s ease;
+                }
             }
         }
 
 
         &:hover {
             background: var(--light-color);
+
+            .meta-wrapper .meta .close {
+                right: 1rem;
+            }
         }
     }
 }
