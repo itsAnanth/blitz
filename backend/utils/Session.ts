@@ -41,7 +41,7 @@ class Session extends events {
             keyPair.privateKey
         );
 
-        const iv = crypto.randomBytes(16);;
+        const iv = crypto.randomBytes(16);
 
         this.sessionKey = publicKeyJwk;
         this.iv = iv;
