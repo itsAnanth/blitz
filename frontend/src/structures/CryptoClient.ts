@@ -60,12 +60,12 @@ class CryptoClient {
     };
 
 
-    static async encrypt(text: string, key: CryptoKey, iv: Uint8Array) {
+    static async encrypt(text: string, key: CryptoKey, _iv?: Uint8Array) {
         const encodedText = new TextEncoder().encode(text);
         const data = await window.crypto.subtle.encrypt(
             {
                 name: 'AES-GCM',
-                iv: iv ?? new TextEncoder().encode('Initialization Vector')
+                iv: new TextEncoder().encode('Initialization Vector')
             },
             key,
             encodedText
@@ -76,17 +76,17 @@ class CryptoClient {
         return uint;
     }
 
-    static async decrypt(text: any, key: CryptoKey, iv: Uint8Array) {
+    static async decrypt(text: Uint8Array, key: CryptoKey, _iv?: Uint8Array) {
         const algorithm = {
             name: 'AES-GCM',
-            iv: iv ?? new TextEncoder().encode('Initialization Vector')
+            iv: new TextEncoder().encode('Initialization Vector')
         };
 
         const data = await window.crypto.subtle.decrypt(
             algorithm,
             key,
             text
-        )
+        ).catch((e) => console.error('decrypt func', e))
 
         return new TextDecoder().decode(data);
     }
