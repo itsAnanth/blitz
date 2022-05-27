@@ -1,21 +1,21 @@
 <script lang="ts">
-    import ChatMessage from "../../../shared/structures/ChatMessage";
     import ChatMsg from "./ChatMessage.svelte";
     import Users from "./Users.svelte";
     import WsManager from "../structures/WsManager";
     import Message from "../../../shared/structures/Message";
-    import { createEventDispatcher, onMount, afterUpdate } from "svelte";
-    import { keys, messages, users } from "../structures/Store";
+    import { onMount, afterUpdate } from "svelte";
+    import { client, keys, messages, users } from "../structures/Store";
     import CryptoClient from "../structures/CryptoClient";
+    import EncryptedMessage from '../../../shared/structures/EncryptedMessage';
+    import Logger from "../../../shared/structures/Logger";
 
-    export let username: string,
-        wsm: WsManager,
-        avatar: number;
+    export let wsm: WsManager;
 
-    const dispatch = createEventDispatcher();
 
     onMount(() => {
-        document.getElementById("msg").focus();
+        const msg = document.getElementById("msg");
+        document.body.addEventListener('focus', () => (Logger.logc('CHAT_FOCUS', '#A020F0'), msg.focus()))
+        msg.focus();
     });
 
     afterUpdate(() => {
@@ -23,6 +23,21 @@
 
         chatMessages.scrollTo(0, chatMessages.scrollHeight);
     });
+
+    async function encryptMessage(msg: string) {
+        const arr: ReturnType<EncryptedMessage['serialize']>[] = [];
+        const usersArr = $users;
+        for (let i = 0; i < usersArr.length; i++) {
+
+            const key = await CryptoClient.deriveKey(usersArr[i].publicKeyJwk, $keys.privateKeyJwk);
+            const data = await CryptoClient.encrypt(msg, key, $keys.iv);
+            const id = usersArr[i].id;
+
+            arr.push(new EncryptedMessage(data, id).serialize());
+        }
+
+        return arr;
+    }
 
 
     async function onSubmit(e: any) {
@@ -37,19 +52,12 @@
         e.target.elements.msg.value = "";
         e.target.elements.msg.focus();
 
-        const encryptedMessage = await CryptoClient.encrypt(msg, $keys.derivedKey, $keys.iv);
-
-        const chatMsg = new ChatMessage({
-            author: username,
-            content: encryptedMessage,
-            avatar: avatar,
-        });
-
+        const data = [{ senderId: $client.id, timestamp: Date.now(), data: await encryptMessage(msg) }];
 
         wsm.send(
             new Message({
                 type: Message.types.MESSAGE_CREATE,
-                data: [chatMsg.serialize()],
+                data: data,
             })
         );
     }
