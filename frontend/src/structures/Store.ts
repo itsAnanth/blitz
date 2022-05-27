@@ -9,7 +9,7 @@ type Ikeys = {
     iv: Uint8Array | null;
 }
 
-type User = { id: string; username: string; avatar: number };
+type User = { id: string; username: string; avatar: number, publicKeyJwk: JsonWebKey };
 
 const messages = writable<ChatMessage[]>([]);
 const users = writable<User[]>([]);
@@ -20,8 +20,9 @@ const keys = writable<Ikeys>({
     derivedKey: null,
     iv: null
 });
+const client = writable<{ id?: string, username?: string, avatar?: number }>({})
 
-export { messages, users, keys };
+export { messages, users, keys, client };
 
 
 
