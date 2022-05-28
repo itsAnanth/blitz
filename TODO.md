@@ -3,4 +3,6 @@
 - [x] refactor packet structures
 - [x] optimize backend
 - [x] responsive UI
+- [ ] Rooms & private messaging
+- [ ] socket timeouts
 - [ ] user account / authentication
