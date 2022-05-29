@@ -4,5 +4,5 @@
 - [x] optimize backend
 - [x] responsive UI
 - [ ] Rooms & private messaging
-- [ ] socket timeouts
+- [x] socket timeouts
 - [ ] user account / authentication
