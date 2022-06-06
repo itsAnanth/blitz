@@ -6,3 +6,4 @@
 - [ ] Rooms & private messaging
 - [x] socket timeouts
 - [ ] user account / authentication
+- [ ] add database integration for messages
