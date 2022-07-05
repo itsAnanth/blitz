@@ -13,7 +13,7 @@
     "start": "node ./utils/shell.js"
   },
   "engines" : { 
-    "node" : ">=17.0.0"
+    "node" : "17.x"
   },
   "repository": {
     "type": "git",
