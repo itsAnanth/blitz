@@ -44,6 +44,10 @@ class WsManager extends EventTarget {
             Logger.logc(Message.types[message.type], 'cyan');
 
             let eventName, detail, usersData;
+            let data: Updates.Server.MESSAGE_CREATE |
+                Updates.Server.CONNECT |
+                Updates.Server.JOIN |
+                Updates.Server.JOIN;
 
             switch (message.type) {
                 case Message.types.CONNECT:
@@ -56,7 +60,8 @@ class WsManager extends EventTarget {
                     break;
                 case Message.types.MESSAGE_CREATE:
                     eventName = 'messagecreate';
-                    detail = { messageId: message.data[0], senderId: message.data[1], senderPublicKey: message.data[2], data: message.data[3] };
+                    data = message.data as Updates.Server.MESSAGE_CREATE;
+                    (<Updates.Client.MESSAGE_CREATE>detail) = { messageId: data[0], senderId: data[1], senderPublicKey: data[2], data: data[3] };
                     break;
                 case Message.types.JOIN:
                     eventName = 'userjoin';
