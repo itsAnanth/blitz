@@ -10,6 +10,14 @@ class Message {
         this.data = data;
     }
 
+    deflate(): DeflatedMessage {
+        return [this.type, ...(this.data || [])];
+    }
+
+    encode(): Buffer {
+        return _encode(this.deflate());
+    }
+
     static typesArray() {
         const arr = [];
         for (const i in MessageType) {
