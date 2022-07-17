@@ -3,3 +3,4 @@
 **/*.env
 **/package-lock.*
 **/pnpm-lock.*
+creds.json
