@@ -20,7 +20,7 @@ const keys = writable<Ikeys>({
     derivedKey: null,
     iv: null
 });
-const client = writable<{ id?: string, username?: string, avatar?: number }>({})
+const client = writable<{ id?: string, username?: string, avatar?: number, signedIn: boolean }>({ signedIn: false })
 
 export { messages, users, keys, client };
 
