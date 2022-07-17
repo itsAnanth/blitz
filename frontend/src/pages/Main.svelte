@@ -7,6 +7,7 @@
     import { client, keys, messages, users } from "../structures/Store";
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import Logger from "../../../shared/structures/Logger";
+    import { Updates } from "../../../shared/types/Updates";
 
 
     let wsConnected: boolean = false,
@@ -17,40 +18,30 @@
     let wsm = new WsManager();
 
     const events = {
-        connect: (ev: any) => {
+        CONNECT: (ev: any) => {
             client.set({ ...$client, id: ev.detail.clientId });
+            wsConnected = true;
             Logger.log("connect", $client);
         },
-        userjoin: (ev: any) => {
+        JOIN: (ev: any) => {
             const message = ev.detail.message;
-            const leaveMsg = new ChatMessage({
-                author: message.author,
-                content: message.content,
-                id: message.id,
-                avatar: 2,
-            });
 
-            messages.set([...$messages, leaveMsg]);
+            messages.set([...$messages, message]);
             users.set([...ev.detail.users]);
         },
-        users: (ev: any) => {
+        USERS: (ev: any) => {
             users.set([...ev.detail.users]);
         },
-        userleave: (ev: any) => {
+        LEAVE: (ev: any) => {
             const message = ev.detail.message;
-            const joinMsg = new ChatMessage({
-                author: message.author,
-                content: message.content,
-                id: message.id,
-                avatar: 2,
-            });
 
-            messages.set([...$messages, joinMsg]);
+            messages.set([...$messages, message]);
             users.set([...ev.detail.users]);
         },
-        messagecreate: async (ev: any) => {
+        MESSAGE_CREATE: async (ev: { detail: Updates.Client.MESSAGE_CREATE }) => {
             const key = await CryptoClient.deriveKey(ev.detail.senderPublicKey, $keys.privateKeyJwk);
             const decryptedText = await CryptoClient.decrypt(
+                // @ts-ignore
                 ev.detail.data,
                 key,
                 $keys.iv
@@ -71,7 +62,7 @@
 
             messages.set([...$messages, msg]);
         },
-        session: async (ev: any) => {
+        SESSION: async (ev: any) => {
             const derived = await CryptoClient.deriveKey(
                 ev.detail.sessionKey,
                 $keys.privateKeyJwk
@@ -86,11 +77,8 @@
         },
     };
 
-    wsm.addEventListener("connect", () => {
-        wsConnected = true;
-    });
-
     for (const [k, v] of Object.entries(events)) {
+        // @ts-ignore
         wsm.addEventListener(k, v);
         Logger.info(`event ${k} attached`);
     }

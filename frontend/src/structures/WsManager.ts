@@ -41,9 +41,10 @@ class WsManager extends EventTarget {
 
             if (!message) return;
 
-            Logger.logc(Message.types[message.type], 'cyan');
+            const eventName = Message.types[message.type];
+            Logger.logc(eventName, 'cyan');
 
-            let eventName, detail, usersData;
+            let detail, usersData;
             let data: Updates.Server.MESSAGE_CREATE |
                 Updates.Server.CONNECT |
                 Updates.Server.JOIN |
@@ -51,32 +52,29 @@ class WsManager extends EventTarget {
 
             switch (message.type) {
                 case Message.types.CONNECT:
-                    eventName = 'connect';
                     (<Updates.Client.CONNECT>detail) = { clientId: (<Updates.Server.CONNECT>message.data)[0] };
                     break;
                 case Message.types.SESSION:
-                    eventName = 'session';
                     detail = { sessionKey: message.data[0], iv: message.data[1] };
                     break;
                 case Message.types.MESSAGE_CREATE:
-                    eventName = 'messagecreate';
                     data = message.data as Updates.Server.MESSAGE_CREATE;
                     (<Updates.Client.MESSAGE_CREATE>detail) = { messageId: data[0], senderId: data[1], senderPublicKey: data[2], data: data[3] };
                     break;
                 case Message.types.JOIN:
-                    eventName = 'userjoin';
-                    usersData = Message.inflate(message.data[1]);
-                    detail = { message: message.data[0], users: usersData ? usersData.data : [] };
+                    data = message.data as Updates.Server.JOIN;
+                    usersData = data[1];
+                    (<Updates.Client.JOIN>detail) = { message: data[0], users: usersData ? usersData : [] };
                     break;
                 case Message.types.USERS:
-                    eventName = 'users';
                     detail = message.data[0];
                 case Message.types.LEAVE:
-                    eventName = 'userleave';
-                    usersData = Message.inflate(message.data[1]);
-                    detail = { message: message.data[0], users: usersData ? usersData.data : [] };
+                    data = message.data as Updates.Server.LEAVE;
+                    usersData = data[1];
+                    (<Updates.Client.LEAVE>detail) = { message: data[0], users: usersData ? usersData : [] };
                     break;
             }
+
             this.dispatchEvent(new CustomEvent(eventName, { detail: detail }));
         })
     }
