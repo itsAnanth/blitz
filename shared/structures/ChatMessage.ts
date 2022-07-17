@@ -23,7 +23,9 @@ class ChatMessage {
             author: this.author,
             content: this.content,
             timestamp: this.timestamp,
-            avatar: this.avatar
+            avatar: this.avatar,
+            id: this.id,
+            authorId: this.authorId
         }
     }
 }
