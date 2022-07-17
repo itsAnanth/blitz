@@ -2,14 +2,16 @@
     import { createEventDispatcher } from 'svelte';
     import { SignIn } from '../utils/accounts';
     import { client } from '../structures/Store';
+    // import { useNavigate, useLocation } from "svelte-navigator";
 
     const dispatch = createEventDispatcher();
     async function onSubmit(ev: any) {
+        const btn: HTMLButtonElement = document.getElementById('signin-btn') as any;
         ev.preventDefault();
         let email = ev.target.email.value,
             password = ev.target.password.value;
         
-
+        btn.disabled = true;
         const user = await SignIn(email, password);
 
         if (user) {
@@ -18,6 +20,7 @@
         }
         
         dispatch('signin', ({ username: user.displayName }));
+        btn.disabled = false;
     }
 </script>
 
@@ -39,13 +42,13 @@
                 <input
                     type="password"
                     name="password"
-                    id="username"
+                    id="password"
                     placeholder="password"
                     autocomplete="off"
                     required
                 />
             </div>
-            <button type="submit" class="btn">Sign In</button>
+            <button type="submit" id="signin-btn" class="btn">Sign In</button>
         </form>
     </main>
 </div>

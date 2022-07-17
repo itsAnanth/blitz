@@ -262,7 +262,7 @@ input:focus {
         margin-top: 1rem;
     }
 
-    input[type='text'] {
+    input[type='text'], input[type='password'] {
         font-size: 0.9rem;
         text-align: center;
         width: 100%;
