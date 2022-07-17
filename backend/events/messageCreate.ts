@@ -4,6 +4,8 @@ import Event from "../utils/Event";
 import Message from "../../shared/structures/Message";
 import EncryptedMessage from '../../shared/structures/EncryptedMessage';
 import Utils from "../utils/Utils";
+import { Updates } from '../../shared/types/Updates';
+
 
 export default new Event({
     type: MessageType.MESSAGE_CREATE,
@@ -21,14 +23,13 @@ export default new Event({
 
             if (!socket) return;
 
+            const msgData: Updates.Server.MESSAGE_CREATE = [Utils.getMessageId(), sender.ws.id, sender.publicKeyJwk, _data.data];
+
             socket.ws.send(
-                Message.encode(
-                    new Message({
-                        type: Message.types.MESSAGE_CREATE,
-                        data: [Utils.getMessageId(), sender.ws.id, sender.publicKeyJwk, _data.data]
-                    })
-                ), true
-            )
+                new Message({
+                    type: Message.types.MESSAGE_CREATE,
+                    data: msgData
+                }).encode(), true)
         }
     },
 })
