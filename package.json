@@ -12,6 +12,9 @@
     "start:client": "cd ./frontend && vite",
     "start": "node ./utils/shell.js"
   },
+  "engines" : { 
+    "node" : "16.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/itsAnanth/wsChatApp.git"
