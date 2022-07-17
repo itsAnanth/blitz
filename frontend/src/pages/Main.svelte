@@ -8,6 +8,7 @@
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import Logger from "../../../shared/structures/Logger";
     import { Updates } from "../../../shared/types/Updates";
+import { xlink_attr } from "svelte/internal";
 
 
     let wsConnected: boolean = false,
@@ -61,6 +62,14 @@
 
 
             messages.set([...$messages, msg]);
+        },
+        MESSAGE_DELETE: (ev: any) => {
+            const current = [...$messages];
+            const el = current.find(x => x.id === ev.detail.messageId);
+            const idx = current.indexOf(el);
+            if (!idx) return;
+            current.splice(idx, 1);
+            messages.set(current);
         },
         SESSION: async (ev: any) => {
             const derived = await CryptoClient.deriveKey(

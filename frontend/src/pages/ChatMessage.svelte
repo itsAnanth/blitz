@@ -1,12 +1,26 @@
 <script lang="ts">
-
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import { client } from "../structures/Store";
 
-    export let data: ChatMessage;
+    import Logger from "../../../shared/structures/Logger";
+    import Message from "../../../shared/structures/Message";
+    import WsManager from "../structures/WsManager";
+
+    export let data: ChatMessage, wsm: WsManager;
 
     function deleteMessage(this: HTMLSpanElement) {
-        // const message: HTMLDivElement = this.parentNode.parentNode.parentNode;
+        const message: HTMLDivElement = this.parentNode.parentNode
+            .parentNode as HTMLDivElement;
+
+        if (!(message && message.classList.item(1)))
+            return Logger.logc("ERROR MESSAGE_DELETE", "red");
+
+        wsm.send(
+            new Message({
+                type: Message.types.MESSAGE_DELETE,
+                data: [{ senderId: $client.id, messageId: message.classList.item(1) }]
+            })
+        )
         // // message.parentNode.removeChild(message);
 
         // console.log(message);

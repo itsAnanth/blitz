@@ -14,7 +14,8 @@ export namespace Updates {
         export type CONNECT = [string];
         export type SESSION = [JsonWebKey, string];
         export type MESSAGE_CREATE = [messageId, senderId, senderPublicKey, serializedEncryptedMessage['data']];
-        export type JOIN = [serializedChatMessage, serializedUsers[]]
+        export type MESSAGE_DELETE = [string];
+        export type JOIN = [serializedChatMessage, serializedUsers[]];
         export type USERS = [serializedUsers[]];
         export type LEAVE = JOIN;
     }
@@ -22,6 +23,9 @@ export namespace Updates {
 
     export namespace Client {
 
+        export type MESSAGE_DELETE = {
+            messageId: string;
+        }
 
         export type MESSAGE_CREATE = {
             messageId: messageId, 

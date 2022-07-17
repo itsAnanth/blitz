@@ -83,7 +83,7 @@
         </div>
         <div class="chat-messages">
             {#each $messages as message}
-                <ChatMsg data={message} />
+                <ChatMsg wsm={wsm} data={message} />
             {/each}
         </div>
     </main>

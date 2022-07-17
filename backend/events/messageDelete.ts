@@ -6,12 +6,14 @@ import { Updates } from '../../shared/types/Updates';
 
 export default new Event({
     type: MessageType.MESSAGE_DELETE,
-    callback(this: WsServer, ws, message) {
+    callback(this: WsServer, _ws, message) {
         const data = message.data;
-        ws.send(
+
+        this.app.publish('STATE/',
             new Message({
                 type: Message.types.MESSAGE_DELETE,
-                data: [ws.id]
-            }).encode(), true);
+                data: [data[0].messageId]
+            }).encode()
+            , true);
     },
 })

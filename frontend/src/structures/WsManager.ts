@@ -48,7 +48,8 @@ class WsManager extends EventTarget {
             let data: Updates.Server.MESSAGE_CREATE |
                 Updates.Server.CONNECT |
                 Updates.Server.JOIN |
-                Updates.Server.JOIN;
+                Updates.Server.LEAVE |
+                Updates.Server.MESSAGE_DELETE;
 
             switch (message.type) {
                 case Message.types.CONNECT:
@@ -60,6 +61,10 @@ class WsManager extends EventTarget {
                 case Message.types.MESSAGE_CREATE:
                     data = message.data as Updates.Server.MESSAGE_CREATE;
                     (<Updates.Client.MESSAGE_CREATE>detail) = { messageId: data[0], senderId: data[1], senderPublicKey: data[2], data: data[3] };
+                    break;
+                case Message.types.MESSAGE_DELETE:
+                    data = message.data as Updates.Server.MESSAGE_DELETE;
+                    (<Updates.Client.MESSAGE_DELETE>detail) = { messageId: data[0] };
                     break;
                 case Message.types.JOIN:
                     data = message.data as Updates.Server.JOIN;
