@@ -1,5 +1,6 @@
 import EncryptedMessage from "../structures/EncryptedMessage";
 import User from '../../backend/structures/User';
+import ChatMessage from "../structures/ChatMessage";
 
 export namespace Updates {
     export type messageId = string;
@@ -7,12 +8,13 @@ export namespace Updates {
     export type senderPublicKey = JsonWebKey;
     export type serializedUsers = ReturnType<User['serialize']>;
     export type serializedEncryptedMessage = ReturnType<EncryptedMessage['serialize']>;
+    export type serializedChatMessage = ReturnType<ChatMessage['serialize']>;
 
     export namespace Server {
         export type CONNECT = [string];
         export type SESSION = [JsonWebKey, string];
-        export type MESSAGE_CREATE = [messageId, senderId, senderPublicKey, serializedEncryptedMessage];
-        export type JOIN = [string, serializedUsers[]]
+        export type MESSAGE_CREATE = [messageId, senderId, senderPublicKey, serializedEncryptedMessage['data']];
+        export type JOIN = [serializedChatMessage, serializedUsers[]]
         export type USERS = [serializedUsers[]];
         export type LEAVE = JOIN;
     }
@@ -25,7 +27,7 @@ export namespace Updates {
             messageId: messageId, 
             senderId: senderId,
             senderPublicKey: senderPublicKey,
-            data: serializedEncryptedMessage;
+            data: serializedEncryptedMessage['data'];
         }
 
         export type CONNECT = {
@@ -38,7 +40,7 @@ export namespace Updates {
         }
 
         export type JOIN = {
-            message: string,
+            message: serializedChatMessage,
             users: serializedUsers[];
         }
 
