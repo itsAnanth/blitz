@@ -1,6 +1,8 @@
 <script lang="ts">
+    import firebase from "../utils/firebase";
     import Chat from "./Chat.svelte";
-    import LogIn from "./LogIn.svelte";
+    import SignIn from "./SignIn.svelte";
+    import SignUp from "./SignUp.svelte";
     import WsManager from "../structures/WsManager";
     import Message from "../../../shared/structures/Message";
     import CryptoClient from "../structures/CryptoClient";
@@ -8,11 +10,9 @@
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import Logger from "../../../shared/structures/Logger";
     import { Updates } from "../../../shared/types/Updates";
-import { xlink_attr } from "svelte/internal";
-
+    import { Router, Route, navigate, Link } from "svelte-navigator";
 
     let wsConnected: boolean = false,
-        loggedIn: boolean = false,
         username: string | null = null,
         avatar: null | number = null;
 
@@ -39,8 +39,13 @@ import { xlink_attr } from "svelte/internal";
             messages.set([...$messages, message]);
             users.set([...ev.detail.users]);
         },
-        MESSAGE_CREATE: async (ev: { detail: Updates.Client.MESSAGE_CREATE }) => {
-            const key = await CryptoClient.deriveKey(ev.detail.senderPublicKey, $keys.privateKeyJwk);
+        MESSAGE_CREATE: async (ev: {
+            detail: Updates.Client.MESSAGE_CREATE;
+        }) => {
+            const key = await CryptoClient.deriveKey(
+                ev.detail.senderPublicKey,
+                $keys.privateKeyJwk
+            );
             const decryptedText = await CryptoClient.decrypt(
                 // @ts-ignore
                 ev.detail.data,
@@ -48,24 +53,23 @@ import { xlink_attr } from "svelte/internal";
                 $keys.iv
             );
 
-            const user = $users.find(x => x.id === ev.detail.senderId);
+            const user = $users.find((x) => x.id === ev.detail.senderId);
 
-            if (!user) return Logger.logc('MESSAGE_CREATE_UNKNOWN_USER', 'red');
+            if (!user) return Logger.logc("MESSAGE_CREATE_UNKNOWN_USER", "red");
 
             const msg = new ChatMessage({
                 author: user.username,
                 content: decryptedText,
                 avatar: user.avatar,
                 id: ev.detail.messageId,
-                authorId: ev.detail.senderId
-            })
-
+                authorId: ev.detail.senderId,
+            });
 
             messages.set([...$messages, msg]);
         },
         MESSAGE_DELETE: (ev: any) => {
             const current = [...$messages];
-            const el = current.find(x => x.id === ev.detail.messageId);
+            const el = current.find((x) => x.id === ev.detail.messageId);
             const idx = current.indexOf(el);
             if (!idx) return;
             current.splice(idx, 1);
@@ -92,11 +96,11 @@ import { xlink_attr } from "svelte/internal";
         Logger.info(`event ${k} attached`);
     }
 
+    firebase();
+
     wsm.connect();
 
-    async function handleLogin(ev: any) {
-        loggedIn = true;
-        username = ev.detail.username;
+    async function handleLogin(_ev: any) {
         avatar = Math.floor(Math.random() * 100);
 
         const keyPair = await CryptoClient.generateKeyPair();
@@ -105,23 +109,33 @@ import { xlink_attr } from "svelte/internal";
         wsm.send(
             new Message({
                 type: Message.types.JOIN,
-                data: [username, avatar, keyPair.publicKeyJwk],
+                data: [$client.username, avatar, keyPair.publicKeyJwk],
             })
         );
+
+        navigate('/chat');
     }
 
     function handleLogout() {
-        loggedIn = false;
         wsm.send(new Message({ type: Message.types.LEAVE, data: [username] }));
         username = null;
         avatar = null;
     }
 </script>
 
-{#if !wsConnected}
-    <div>connecting</div>
-{:else if !loggedIn}
-    <LogIn on:login={handleLogin} />
-{:else}
-    <Chat on:logout={handleLogout} {wsm}/>
-{/if}
+<Router>
+    <Route path="/">
+        <SignIn on:signin={handleLogin} />
+    </Route>
+    <Route path="/chat" component={Chat} />
+    <Route path="/signup" component={SignUp} />
+
+    {#if !wsConnected}
+        <div>connecting</div>
+    {:else if !$client.signedIn}
+        <SignIn on:signin={handleLogin} />
+    <!-- {:else} -->
+        <!-- <Link to="/chat" /> -->
+        <!-- <Chat on:logout={handleLogout} {wsm} /> -->
+    {/if}
+</Router>
