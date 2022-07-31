@@ -1,25 +1,28 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
-    import { SignIn } from '../utils/accounts';
-    import { client } from '../structures/Store';
-    // import { useNavigate, useLocation } from "svelte-navigator";
+    import { createEventDispatcher } from "svelte";
+    import Accounts from "../utils/accounts";
+    import { client } from "../structures/Store";
+
+    let user: { error: boolean; detail: any };
 
     const dispatch = createEventDispatcher();
     async function onSubmit(ev: any) {
-        const btn: HTMLButtonElement = document.getElementById('signin-btn') as any;
+        const btn: HTMLButtonElement = document.getElementById(
+            "signin-btn"
+        ) as any;
         ev.preventDefault();
         let email = ev.target.email.value,
             password = ev.target.password.value;
-        
-        btn.disabled = true;
-        const user = await SignIn(email, password);
 
-        if (user) {
+        btn.disabled = true;
+        user = await Accounts.signIn(email, password);
+
+        if (!user.error) {
             $client.signedIn = true;
-            $client.username = user.displayName;
+            $client.username = user.detail.displayName;
+            dispatch("signin", { username: user.detail.displayName });
         }
-        
-        dispatch('signin', ({ username: user.displayName }));
+
         btn.disabled = false;
     }
 </script>
@@ -29,6 +32,11 @@
         <h1><i />Blitz</h1>
     </header>
     <main class="join-main">
+        {#if user && user.error}
+            <div class="join-main-error">
+                {user.detail.split("/")[1].split("-").join(" ")}
+            </div>
+        {/if}
         <form on:submit={onSubmit}>
             <div class="form-control">
                 <input
