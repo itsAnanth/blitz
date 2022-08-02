@@ -10,10 +10,11 @@
     "heroku-postbuild": "npm install -g pnpm && pnpm install && cd ./backend && pnpm install && pnpm build",
     "start:server": "cd ./backend && npm run start",
     "start:client": "cd ./frontend && vite",
-    "start": "node ./utils/shell.js"
+    "start": "node ./utils/shell.js",
+    "deploy": "cd ./frontend && gh-pages -d dist"
   },
-  "engines" : { 
-    "node" : "16.x"
+  "engines": {
+    "node": "16.x"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
     "@types/msgpack-lite": "^0.1.8",
     "@types/node": "*",
     "dotenv": "^16.0.1",
+    "gh-pages": "^4.0.0",
     "msgpack-lite": "^0.1.26"
   }
 }
