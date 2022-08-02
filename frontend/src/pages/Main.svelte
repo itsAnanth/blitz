@@ -142,7 +142,7 @@
         <div>connecting</div>
     {:else if !$client.signedIn && !window.location.pathname.includes('signup')}
         <SignIn on:signin={handleLogin} />
-    {:else}
-        <Chat on:logout={handleLogout} {wsm} />
+    <!-- {:else}
+        <Chat on:logout={handleLogout} {wsm} /> -->
     {/if}
 </Router>
