@@ -8,8 +8,20 @@
     import CryptoClient from "../structures/CryptoClient";
     import EncryptedMessage from '../../../shared/structures/EncryptedMessage';
     import Logger from "../../../shared/structures/Logger";
+    import { useNavigate, useLocation } from "svelte-navigator";
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     export let wsm: WsManager;
+
+
+    if (!$client.signedIn) {
+        navigate("/", {
+            state: { from: $location.pathname },
+            replace: true,
+        });
+    }
 
 
     onMount(() => {
