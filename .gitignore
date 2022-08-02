@@ -4,3 +4,4 @@
 **/package-lock.*
 **/pnpm-lock.*
 creds.json
+**/dist/
