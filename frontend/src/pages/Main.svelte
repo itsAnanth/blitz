@@ -10,7 +10,11 @@
     import ChatMessage from "../../../shared/structures/ChatMessage";
     import Logger from "../../../shared/structures/Logger";
     import { Updates } from "../../../shared/types/Updates";
-    import { Router, Route, navigate, Link } from "svelte-navigator";
+    import {
+        Router,
+        Route,
+        navigate
+    } from "svelte-navigator";
 
     let wsConnected: boolean = false,
         username: string | null = null,
@@ -113,7 +117,9 @@
             })
         );
 
-        navigate('/chat');
+        console.log('Signed in or not >>>', $client.signedIn)
+
+        navigate("/chat", { });
     }
 
     function handleLogout() {
@@ -127,15 +133,16 @@
     <Route path="/">
         <SignIn on:signin={handleLogin} />
     </Route>
-    <Route path="/chat" component={Chat} />
+    <Route path="/chat">
+        <Chat on:logout={handleLogout} {wsm} />
+    </Route>
     <Route path="/signup" component={SignUp} />
 
     {#if !wsConnected}
         <div>connecting</div>
-    {:else if !$client.signedIn}
+    {:else if !$client.signedIn && !window.location.pathname.includes('signup')}
         <SignIn on:signin={handleLogin} />
-    <!-- {:else} -->
-        <!-- <Link to="/chat" /> -->
-        <!-- <Chat on:logout={handleLogout} {wsm} /> -->
+    {:else}
+        <Chat on:logout={handleLogout} {wsm} />
     {/if}
 </Router>

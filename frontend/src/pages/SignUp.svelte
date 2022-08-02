@@ -1,6 +1,6 @@
 <script lang="ts">
     import Accounts from "../utils/accounts";
-    import { navigate } from "svelte-navigator";
+    import { navigate, Link } from "svelte-navigator";
 
     let user: { error: boolean; detail: any };
 
@@ -33,35 +33,35 @@
             </div>
         {/if}
 
-        <form on:submit={onSubmit}>
+        <form on:submit={onSubmit} autocomplete="off">
             <div class="form-control">
-                <label for="username">Username</label>
+                <label for="username">username</label>
                 <input
                     type="text"
                     name="username"
                     id="username"
                     placeholder="What should everyone call you"
-                    autocomplete="off"
                     required
                 />
+                <label for="email">Email</label>
                 <input
                     type="text"
                     name="email"
                     id="email"
                     placeholder="example@gmail.com"
-                    autocomplete="off"
                     required
                 />
+                <label for="password">Password</label>
                 <input
                     type="password"
                     name="password"
                     id="password"
                     placeholder="password"
-                    autocomplete="off"
                     required
                 />
             </div>
             <button type="submit" class="btn">Sign Up</button>
         </form>
+        <div class="signup">Already have an Account? <Link to="/">sign in</Link></div>
     </main>
 </div>

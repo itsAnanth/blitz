@@ -2,8 +2,21 @@
     import { createEventDispatcher } from "svelte";
     import Accounts from "../utils/accounts";
     import { client } from "../structures/Store";
+    import { Link, useNavigate, useLocation } from "svelte-navigator";
 
     let user: { error: boolean; detail: any };
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+
+
+    if ($client.signedIn) {
+        navigate("/chat", {
+            state: { from: $location.pathname },
+            replace: true,
+        });
+    }
 
     const dispatch = createEventDispatcher();
     async function onSubmit(ev: any) {
@@ -39,6 +52,7 @@
         {/if}
         <form on:submit={onSubmit}>
             <div class="form-control">
+                <label for="email">Email</label>
                 <input
                     type="text"
                     name="email"
@@ -47,6 +61,7 @@
                     autocomplete="off"
                     required
                 />
+                <label for="password">Password</label>
                 <input
                     type="password"
                     name="password"
@@ -58,5 +73,6 @@
             </div>
             <button type="submit" id="signin-btn" class="btn">Sign In</button>
         </form>
+        <div class="signup">Don't have an Account? <Link to="/signup">sign up</Link></div>
     </main>
 </div>
