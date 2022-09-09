@@ -1,6 +1,7 @@
 import EncryptedMessage from "../structures/EncryptedMessage";
 import User from '../../backend/structures/User';
 import ChatMessage from "../structures/ChatMessage";
+import { JsonWebKey } from 'node:crypto';
 
 export namespace Updates {
     export type messageId = string;
